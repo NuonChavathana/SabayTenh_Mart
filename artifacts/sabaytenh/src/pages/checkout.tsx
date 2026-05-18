@@ -45,6 +45,7 @@ const PAYMENT_METHODS = [
     desc: "ABA Mobile Banking",
     descKh: "ABA Mobile Banking",
     icon: "🏦",
+    logo: "/logo-aba.jpeg",
     color: "from-blue-500 to-blue-700",
     bg: "bg-gradient-to-br from-blue-500 to-blue-700",
     textColor: "text-white",
@@ -57,6 +58,7 @@ const PAYMENT_METHODS = [
     desc: "ACLEDA Mobile",
     descKh: "ACLEDA Mobile",
     icon: "💳",
+    logo: "/logo-acleda.jpeg",
     color: "from-red-500 to-red-700",
     bg: "bg-gradient-to-br from-red-500 to-red-700",
     textColor: "text-white",
@@ -511,8 +513,10 @@ export default function CheckoutPage() {
                             onClick={() => setPaymentMethod(m.value)}
                           >
                             <RadioGroupItem value={m.value} id={`pm-${m.value}`} />
-                            <div className={`w-10 h-10 rounded-xl ${m.bg} flex items-center justify-center text-xl shadow-sm flex-shrink-0`}>
-                              {m.icon}
+                            <div className={`w-10 h-10 rounded-xl ${"logo" in m ? "bg-white border border-border/40" : m.bg} flex items-center justify-center text-xl shadow-sm flex-shrink-0 overflow-hidden`}>
+                              {"logo" in m && m.logo
+                                ? <img src={m.logo as string} alt={m.label} className="w-full h-full object-cover" />
+                                : m.icon}
                             </div>
                             <Label htmlFor={`pm-${m.value}`} className="cursor-pointer flex-1">
                               <div className="flex items-center gap-2">
@@ -610,7 +614,10 @@ export default function CheckoutPage() {
                 {/* Payment summary (step 1+) */}
                 {step >= 1 && (
                   <div className={`mt-3 ${selectedPayment.bg} rounded-xl p-3 flex items-center gap-3`}>
-                    <span className="text-xl">{selectedPayment.icon}</span>
+                    {"logo" in selectedPayment && selectedPayment.logo
+                      ? <div className="w-8 h-8 rounded-lg bg-white overflow-hidden flex-shrink-0"><img src={selectedPayment.logo as string} alt={selectedPayment.label} className="w-full h-full object-cover" /></div>
+                      : <span className="text-xl">{selectedPayment.icon}</span>
+                    }
                     <div className="text-white min-w-0">
                       <p className="text-xs font-bold">{selectedPayment.label}</p>
                       <p className="text-white/70 text-[11px] truncate">{selectedPayment.desc}</p>
