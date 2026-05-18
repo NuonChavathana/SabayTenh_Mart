@@ -83,7 +83,8 @@ router.get("/dashboard/sales", requireAuth, requireRole("staff", "cashier", "adm
     GROUP BY date_series.d
     ORDER BY date_series.d
   `);
-  res.json((rows as unknown as any[]).map(r => ({ date: r.date, revenue: parseFloat(r.revenue), orders: parseInt(r.orders, 10) })));
+  const result = (rows as any).rows ?? (rows as any);
+  res.json((result as any[]).map((r: any) => ({ date: r.date, revenue: parseFloat(r.revenue), orders: parseInt(r.orders, 10) })));
 });
 
 router.get("/dashboard/recent-orders", requireAuth, requireRole("staff", "cashier", "admin"), async (_req, res): Promise<void> => {
