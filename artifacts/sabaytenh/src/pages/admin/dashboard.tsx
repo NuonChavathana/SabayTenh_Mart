@@ -20,6 +20,15 @@ import {
 } from "recharts";
 import { StatusBadge } from "../orders";
 
+const PAYMENT_LOGOS: Record<string, { logo: string; label: string }> = {
+  khqr:    { logo: "/logo-khqr.jpeg",    label: "KHQR Bakong" },
+  aba:     { logo: "/logo-aba.jpeg",     label: "ABA Bank" },
+  acleda:  { logo: "/logo-acleda.jpeg",  label: "ACLEDA" },
+  canadia: { logo: "/logo-canadia.jpeg", label: "Canadia" },
+  wing:    { logo: "/logo-wing.jpeg",    label: "Wing Money" },
+  cash:    { logo: "",                   label: "Cash on Delivery" },
+};
+
 export default function DashboardPage() {
   const { t } = useLanguage();
   const { data: summary, isLoading: sumLoading } = useGetDashboardSummary();
@@ -324,7 +333,14 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium">{order.userName}</p>
-                        <p className="text-xs text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()} · {order.paymentMethod?.toUpperCase()}</p>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="text-xs text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</span>
+                          <span className="text-xs text-muted-foreground">·</span>
+                          {PAYMENT_LOGOS[order.paymentMethod ?? ""]?.logo
+                            ? <img src={PAYMENT_LOGOS[order.paymentMethod].logo} alt="" className="w-4 h-4 rounded object-cover" />
+                            : <span className="text-xs">💵</span>}
+                          <span className="text-xs text-muted-foreground">{PAYMENT_LOGOS[order.paymentMethod ?? ""]?.label ?? order.paymentMethod?.toUpperCase()}</span>
+                        </div>
                       </div>
                       <StatusBadge status={order.status} />
                       <span className="text-sm font-semibold text-primary flex-shrink-0">${Number(order.total).toFixed(2)}</span>

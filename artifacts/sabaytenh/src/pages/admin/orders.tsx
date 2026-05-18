@@ -16,6 +16,35 @@ import { useListOrders, useUpdateOrderStatus, OrderStatusUpdateStatus } from "@w
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 
+// ── Payment logos ──────────────────────────────────────────────────────────────
+const PAYMENT_LOGOS: Record<string, { logo: string; label: string }> = {
+  khqr:    { logo: "/logo-khqr.jpeg",    label: "KHQR Bakong" },
+  aba:     { logo: "/logo-aba.jpeg",     label: "ABA Bank" },
+  acleda:  { logo: "/logo-acleda.jpeg",  label: "ACLEDA" },
+  canadia: { logo: "/logo-canadia.jpeg", label: "Canadia" },
+  wing:    { logo: "/logo-wing.jpeg",    label: "Wing Money" },
+  cash:    { logo: "",                   label: "Cash on Delivery" },
+};
+
+function PaymentBadge({ method, paymentStatus }: { method: string; paymentStatus?: string }) {
+  const info = PAYMENT_LOGOS[method];
+  return (
+    <div className="flex items-center gap-1.5">
+      {info?.logo
+        ? <img src={info.logo} alt={info.label} className="w-5 h-5 rounded object-cover flex-shrink-0" />
+        : <span className="text-sm">💵</span>}
+      <div>
+        <span className="text-xs font-medium">{info?.label ?? method.toUpperCase()}</span>
+        {paymentStatus && (
+          <span className={`ml-1.5 text-[10px] font-medium ${paymentStatus === "paid" ? "text-green-600" : "text-yellow-600"}`}>
+            {paymentStatus}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Tracking stages (matches customer order-detail.tsx) ────────────────────────
 const STAGES = [
   { status: "pending",    label: "Order Placed",      labelKh: "ការបញ្ជាបានដាក់",       Icon: ShoppingBag },
@@ -149,11 +178,11 @@ function OrderPanel({ order, onUpdateStatus }: { order: any; onUpdateStatus: (id
                 <p className="font-medium text-xs">{order.shippingAddress || "—"}</p>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-start">
               <CreditCard className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs text-muted-foreground">{t("Payment", "ការទូទាត់")}</p>
-                <p className="font-medium text-xs uppercase">{order.paymentMethod} — <span className={order.paymentStatus === "paid" ? "text-green-600" : "text-yellow-600"}>{order.paymentStatus}</span></p>
+                <p className="text-xs text-muted-foreground mb-1">{t("Payment", "ការទូទាត់")}</p>
+                <PaymentBadge method={order.paymentMethod ?? "cash"} paymentStatus={order.paymentStatus} />
               </div>
             </div>
           </div>
@@ -324,7 +353,12 @@ export default function AdminOrdersPage() {
                               <td className="px-4 py-3">
                                 <div>
                                   <p className="font-medium">{order.userName ?? "—"}</p>
-                                  <p className="text-xs text-muted-foreground uppercase">{order.paymentMethod}</p>
+                                  <div className="flex items-center gap-1 mt-0.5">
+                                    {PAYMENT_LOGOS[order.paymentMethod ?? ""]?.logo
+                                      ? <img src={PAYMENT_LOGOS[order.paymentMethod].logo} alt="" className="w-4 h-4 rounded object-cover" />
+                                      : <span className="text-xs">💵</span>}
+                                    <span className="text-xs text-muted-foreground">{PAYMENT_LOGOS[order.paymentMethod ?? ""]?.label ?? order.paymentMethod?.toUpperCase()}</span>
+                                  </div>
                                 </div>
                               </td>
                               <td className="px-4 py-3 text-muted-foreground text-xs">{new Date(order.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}</td>

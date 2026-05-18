@@ -31,12 +31,12 @@ interface PosItem {
 
 // ─── Payment methods ──────────────────────────────────────────────────────────
 const PAYMENT_METHODS = [
-  { value: OrderInputPaymentMethod.cash,    label: "Cash",    labelKh: "ប្រាក់",  icon: "💵", bg: "bg-green-500" },
-  { value: OrderInputPaymentMethod.khqr,    label: "KHQR",   labelKh: "KHQR",    icon: "🇰🇭", bg: "bg-blue-600" },
-  { value: OrderInputPaymentMethod.aba,     label: "ABA",    labelKh: "ABA",     icon: "🏦", bg: "bg-blue-500" },
-  { value: OrderInputPaymentMethod.acleda,  label: "ACLEDA", labelKh: "ACLEDA",  icon: "💳", bg: "bg-red-500" },
-  { value: OrderInputPaymentMethod.canadia, label: "Canadia",labelKh: "ខេណាឌីយ៉ា",icon: "🏛️", bg: "bg-emerald-500" },
-  { value: OrderInputPaymentMethod.wing,    label: "Wing",   labelKh: "Wing",    icon: "💸", bg: "bg-purple-500" },
+  { value: OrderInputPaymentMethod.cash,    label: "Cash",         labelKh: "ប្រាក់",    logo: "",                    bg: "bg-green-500" },
+  { value: OrderInputPaymentMethod.khqr,    label: "KHQR Bakong",  labelKh: "KHQR",      logo: "/logo-khqr.jpeg",     bg: "bg-blue-600" },
+  { value: OrderInputPaymentMethod.aba,     label: "ABA Bank",     labelKh: "ABA",       logo: "/logo-aba.jpeg",      bg: "bg-blue-500" },
+  { value: OrderInputPaymentMethod.acleda,  label: "ACLEDA",       labelKh: "ACLEDA",    logo: "/logo-acleda.jpeg",   bg: "bg-red-500" },
+  { value: OrderInputPaymentMethod.canadia, label: "Canadia",      labelKh: "ខេណាឌីយ៉ា",  logo: "/logo-canadia.jpeg",  bg: "bg-emerald-500" },
+  { value: OrderInputPaymentMethod.wing,    label: "Wing Money",   labelKh: "Wing",      logo: "/logo-wing.jpeg",     bg: "bg-purple-500" },
 ];
 
 // ─── QR Grid ─────────────────────────────────────────────────────────────────
@@ -97,9 +97,14 @@ function ReceiptModal({
             <span>{t("TOTAL", "សរុប")}</span>
             <span className="text-primary">${total.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between text-muted-foreground mt-0.5">
+          <div className="flex justify-between items-center text-muted-foreground mt-0.5">
             <span>{t("Payment", "ការទូទាត់")}</span>
-            <span className="uppercase">{method?.label}</span>
+            <span className="flex items-center gap-1">
+              {method?.logo
+                ? <img src={method.logo} alt={method.label} className="w-4 h-4 rounded object-cover" />
+                : null}
+              <span className="font-medium text-foreground">{method?.label}</span>
+            </span>
           </div>
 
           {isQR && (
@@ -392,10 +397,12 @@ export default function POSPage() {
                     <button
                       key={m.value}
                       onClick={() => setPaymentMethod(m.value)}
-                      className={`flex flex-col items-center gap-0.5 py-1.5 rounded-lg border-2 transition-all ${paymentMethod === m.value ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}
+                      className={`flex flex-col items-center gap-1 py-2 rounded-lg border-2 transition-all ${paymentMethod === m.value ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}
                     >
-                      <span className="text-base">{m.icon}</span>
-                      <span className="text-[10px] font-medium">{t(m.label, m.labelKh)}</span>
+                      {m.logo
+                        ? <img src={m.logo} alt={m.label} className="w-7 h-7 rounded-md object-cover" />
+                        : <span className="text-lg">💵</span>}
+                      <span className="text-[10px] font-medium leading-tight text-center">{t(m.label, m.labelKh)}</span>
                     </button>
                   ))}
                 </div>
