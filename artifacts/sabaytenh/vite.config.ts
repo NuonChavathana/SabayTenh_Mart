@@ -66,6 +66,14 @@ export default defineConfig({
     fs: {
       strict: true,
     },
+    watch: {
+      ignored: [
+        "**/lib/api-client-react/src/generated/**",
+      ],
+    },
+  },
+  optimizeDeps: {
+    include: ["react", "react-dom"],
   },
   preview: {
     port,
