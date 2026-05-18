@@ -5,11 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const PAYMENT_METHODS = [
-  { name: "KHQR 🇰🇭", color: "bg-blue-700" },
+  { name: "KHQR", color: "bg-blue-700" },
   { name: "ABA", color: "bg-blue-500" },
   { name: "ACLEDA", color: "bg-red-600" },
   { name: "Wing", color: "bg-purple-600" },
   { name: "Canadia", color: "bg-emerald-600" },
+  { name: "Vattanac", color: "bg-indigo-600" },
   { name: "Cash", color: "bg-green-600" },
 ];
 

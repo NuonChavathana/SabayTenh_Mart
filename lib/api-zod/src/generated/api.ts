@@ -541,7 +541,7 @@ export const ListOrdersResponse = zod.array(ListOrdersResponseItem)
  * @summary Place an order (checkout)
  */
 export const CreateOrderBody = zod.object({
-  "paymentMethod": zod.enum(['cash', 'khqr', 'aba', 'acleda', 'canadia', 'wing']),
+  "paymentMethod": zod.enum(['cash', 'khqr', 'aba', 'acleda', 'canadia', 'wing', 'vatanak']),
   "shippingAddress": zod.string(),
   "note": zod.string().optional()
 })

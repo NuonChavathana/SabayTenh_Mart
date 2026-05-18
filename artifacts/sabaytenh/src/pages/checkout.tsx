@@ -87,6 +87,18 @@ const PAYMENT_METHODS = [
     badge: "",
   },
   {
+    value: OrderInputPaymentMethod.vatanak,
+    label: "Vattanac Bank",
+    labelKh: "ធនាគារ វត្តនៈ",
+    desc: "Vattanac Mobile",
+    descKh: "Vattanac Mobile",
+    icon: "",
+    color: "from-blue-600 to-indigo-700",
+    bg: "bg-gradient-to-br from-blue-600 to-indigo-700",
+    textColor: "text-white",
+    badge: "",
+  },
+  {
     value: OrderInputPaymentMethod.cash,
     label: "Cash on Delivery",
     labelKh: "បង់ប្រាក់នៅពេលទទួលទំនិញ",
@@ -102,10 +114,11 @@ const PAYMENT_METHODS = [
 
 // ─── Real bank QR image map ────────────────────────────────────────────────────
 const QR_IMAGES: Partial<Record<string, string>> = {
-  [OrderInputPaymentMethod.aba]:    "/qr-aba.jpeg",
-  [OrderInputPaymentMethod.acleda]: "/qr-acleda.jpeg",
-  [OrderInputPaymentMethod.wing]:   "/qr-wing.jpeg",
-  [OrderInputPaymentMethod.khqr]:   "/qr-khqr.jpeg",
+  [OrderInputPaymentMethod.aba]:     "/qr-aba.jpeg",
+  [OrderInputPaymentMethod.acleda]:  "/qr-acleda.jpeg",
+  [OrderInputPaymentMethod.wing]:    "/qr-wing.jpeg",
+  [OrderInputPaymentMethod.khqr]:    "/qr-khqr.jpeg",
+  [OrderInputPaymentMethod.vatanak]: "/qr-vatanak.png",
 };
 
 // ─── Payment QR Modal ─────────────────────────────────────────────────────────

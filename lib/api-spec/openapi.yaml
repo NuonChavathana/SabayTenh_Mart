@@ -1120,7 +1120,7 @@ components:
       properties:
         paymentMethod:
           type: string
-          enum: [cash, khqr, aba, acleda, canadia, wing]
+          enum: [cash, khqr, aba, acleda, canadia, wing, vatanak]
         shippingAddress:
           type: string
         note:
