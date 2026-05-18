@@ -39,7 +39,7 @@ export default function AdminOrdersPage() {
   });
 
   return (
-    <ProtectedRoute allowedRoles={["admin", "staff", "cashier"]}>
+    <ProtectedRoute allowedRoles={["admin", "staff"]}>
       <AdminLayout>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
