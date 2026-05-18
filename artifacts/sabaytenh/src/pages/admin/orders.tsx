@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Search, ChevronDown, ChevronUp, ShoppingBag, CreditCard,
-  Package, Truck, CheckCircle2, XCircle, Check, ArrowRight, MapPin,
+  Package, Truck, CheckCircle2, XCircle, Check, ArrowRight, MapPin, Banknote,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
@@ -32,7 +32,7 @@ function PaymentBadge({ method, paymentStatus }: { method: string; paymentStatus
     <div className="flex items-center gap-1.5">
       {info?.logo
         ? <img src={info.logo} alt={info.label} className="w-5 h-5 rounded object-cover flex-shrink-0" />
-        : <span className="text-sm">💵</span>}
+        : <Banknote className="h-4 w-4 text-green-600 flex-shrink-0" />}
       <div>
         <span className="text-xs font-medium">{info?.label ?? method.toUpperCase()}</span>
         {paymentStatus && (
@@ -356,7 +356,7 @@ export default function AdminOrdersPage() {
                                   <div className="flex items-center gap-1 mt-0.5">
                                     {PAYMENT_LOGOS[order.paymentMethod ?? ""]?.logo
                                       ? <img src={PAYMENT_LOGOS[order.paymentMethod].logo} alt="" className="w-4 h-4 rounded object-cover" />
-                                      : <span className="text-xs">💵</span>}
+                                      : <Banknote className="h-4 w-4 text-green-600 flex-shrink-0" />}
                                     <span className="text-xs text-muted-foreground">{PAYMENT_LOGOS[order.paymentMethod ?? ""]?.label ?? order.paymentMethod?.toUpperCase()}</span>
                                   </div>
                                 </div>

@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Search, Plus, Minus, Trash2, ShoppingBag, CheckCircle2, Printer, RotateCcw, Loader2, Tag, X } from "lucide-react";
+import { Search, Plus, Minus, Trash2, ShoppingBag, CheckCircle2, Printer, RotateCcw, Loader2, Tag, X, Banknote } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
@@ -401,7 +401,7 @@ export default function POSPage() {
                     >
                       {m.logo
                         ? <img src={m.logo} alt={m.label} className="w-7 h-7 rounded-md object-cover" />
-                        : <span className="text-lg">💵</span>}
+                        : <Banknote className="h-5 w-5 text-green-600" />}
                       <span className="text-[10px] font-medium leading-tight text-center">{t(m.label, m.labelKh)}</span>
                     </button>
                   ))}

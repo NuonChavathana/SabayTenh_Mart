@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import {
   ShoppingBag, Users, DollarSign, Package, TrendingUp,
-  ArrowUpRight, Clock, AlertTriangle, Star, BarChart3,
+  ArrowUpRight, Clock, AlertTriangle, Star, BarChart3, Banknote,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
@@ -338,7 +338,7 @@ export default function DashboardPage() {
                           <span className="text-xs text-muted-foreground">·</span>
                           {PAYMENT_LOGOS[order.paymentMethod ?? ""]?.logo
                             ? <img src={PAYMENT_LOGOS[order.paymentMethod].logo} alt="" className="w-4 h-4 rounded object-cover" />
-                            : <span className="text-xs">💵</span>}
+                            : <Banknote className="h-4 w-4 text-green-600 flex-shrink-0" />}
                           <span className="text-xs text-muted-foreground">{PAYMENT_LOGOS[order.paymentMethod ?? ""]?.label ?? order.paymentMethod?.toUpperCase()}</span>
                         </div>
                       </div>
