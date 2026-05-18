@@ -3,6 +3,8 @@ import { Link, useLocation } from "wouter";
 import {
   ArrowRight, Star, ShoppingCart, Heart, Zap, Truck, Shield,
   RotateCcw, Headphones, ChevronLeft, ChevronRight, X, Tag,
+  ShoppingBasket, Coffee, Smartphone, Shirt, Sparkles,
+  Home as HomeIcon, BookOpen, Leaf, Package, Dumbbell, ShieldPlus, ShoppingBag,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -216,19 +218,20 @@ function HeroSlider() {
 }
 
 // ── Category Grid (Mega Menu) ───────────────────────────────────────────────
-const CAT_COLORS: Record<string, { bg: string; icon: string; text: string }> = {
-  groceries:    { bg: "bg-amber-50 dark:bg-amber-900/20",   icon: "🛒", text: "text-amber-700 dark:text-amber-300" },
-  drinks:       { bg: "bg-sky-50 dark:bg-sky-900/20",       icon: "🥤", text: "text-sky-700 dark:text-sky-300" },
-  electronics:  { bg: "bg-indigo-50 dark:bg-indigo-900/20", icon: "📱", text: "text-indigo-700 dark:text-indigo-300" },
-  clothing:     { bg: "bg-pink-50 dark:bg-pink-900/20",     icon: "👗", text: "text-pink-700 dark:text-pink-300" },
-  beauty:       { bg: "bg-rose-50 dark:bg-rose-900/20",     icon: "💄", text: "text-rose-700 dark:text-rose-300" },
-  home:         { bg: "bg-orange-50 dark:bg-orange-900/20", icon: "🏠", text: "text-orange-700 dark:text-orange-300" },
-  school:       { bg: "bg-purple-50 dark:bg-purple-900/20", icon: "📚", text: "text-purple-700 dark:text-purple-300" },
-  "fresh-food": { bg: "bg-green-50 dark:bg-green-900/20",   icon: "🥦", text: "text-green-700 dark:text-green-300" },
-  "baby-kids":  { bg: "bg-yellow-50 dark:bg-yellow-900/20", icon: "🍼", text: "text-yellow-700 dark:text-yellow-300" },
-  sports:       { bg: "bg-teal-50 dark:bg-teal-900/20",     icon: "⚽", text: "text-teal-700 dark:text-teal-300" },
-  health:       { bg: "bg-emerald-50 dark:bg-emerald-900/20",icon: "💊",text: "text-emerald-700 dark:text-emerald-300"},
-  essentials:   { bg: "bg-gray-100 dark:bg-gray-800",       icon: "📦", text: "text-gray-700 dark:text-gray-300" },
+type CatStyle = { bg: string; Icon: React.ComponentType<{ className?: string }>; text: string };
+const CAT_COLORS: Record<string, CatStyle> = {
+  groceries:    { bg: "bg-amber-50 dark:bg-amber-900/20",    Icon: ShoppingBasket, text: "text-amber-700 dark:text-amber-300"   },
+  drinks:       { bg: "bg-sky-50 dark:bg-sky-900/20",        Icon: Coffee,         text: "text-sky-700 dark:text-sky-300"       },
+  electronics:  { bg: "bg-indigo-50 dark:bg-indigo-900/20",  Icon: Smartphone,     text: "text-indigo-700 dark:text-indigo-300" },
+  clothing:     { bg: "bg-pink-50 dark:bg-pink-900/20",      Icon: Shirt,          text: "text-pink-700 dark:text-pink-300"     },
+  beauty:       { bg: "bg-rose-50 dark:bg-rose-900/20",      Icon: Sparkles,       text: "text-rose-700 dark:text-rose-300"     },
+  home:         { bg: "bg-orange-50 dark:bg-orange-900/20",  Icon: HomeIcon,       text: "text-orange-700 dark:text-orange-300" },
+  school:       { bg: "bg-purple-50 dark:bg-purple-900/20",  Icon: BookOpen,       text: "text-purple-700 dark:text-purple-300" },
+  "fresh-food": { bg: "bg-green-50 dark:bg-green-900/20",    Icon: Leaf,           text: "text-green-700 dark:text-green-300"   },
+  "baby-kids":  { bg: "bg-yellow-50 dark:bg-yellow-900/20",  Icon: ShoppingBag,    text: "text-yellow-700 dark:text-yellow-300" },
+  sports:       { bg: "bg-teal-50 dark:bg-teal-900/20",      Icon: Dumbbell,       text: "text-teal-700 dark:text-teal-300"     },
+  health:       { bg: "bg-emerald-50 dark:bg-emerald-900/20",Icon: ShieldPlus,     text: "text-emerald-700 dark:text-emerald-300"},
+  essentials:   { bg: "bg-gray-100 dark:bg-gray-800",        Icon: Package,        text: "text-gray-700 dark:text-gray-300"     },
 };
 
 function CategoryGrid() {
@@ -261,11 +264,14 @@ function CategoryGrid() {
       </div>
       <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-2">
         {(categories ?? []).map((cat: any) => {
-          const style = CAT_COLORS[cat.slug] ?? { bg: "bg-muted", icon: "🛍️", text: "text-foreground" };
+          const style: CatStyle = CAT_COLORS[cat.slug] ?? { bg: "bg-muted", Icon: Package, text: "text-foreground" };
+          const { Icon } = style;
           return (
             <Link key={cat.id} href={`/category/${cat.slug}`}>
               <div className={`${style.bg} rounded-2xl p-2.5 flex flex-col items-center gap-1.5 hover:shadow-md hover:scale-105 transition-all cursor-pointer text-center group aspect-square justify-center`}>
-                <span className="text-3xl leading-none">{style.icon}</span>
+                <div className="flex items-center justify-center w-9 h-9">
+                  <Icon className={`h-6 w-6 ${style.text}`} />
+                </div>
                 <span className={`text-[10px] sm:text-xs font-semibold leading-tight line-clamp-2 ${style.text}`}>
                   {t(cat.name, cat.nameKh ?? cat.name)}
                 </span>
@@ -653,7 +659,7 @@ function GrocerySideBanner() {
   return (
     <Link href="/category/fresh-food">
       <div className="h-full min-h-48 bg-gradient-to-b from-green-500 to-emerald-600 rounded-2xl flex flex-col items-center justify-center text-white text-center p-4 gap-2 hover:opacity-95 transition-opacity">
-        <span className="text-4xl">🥦</span>
+        <Leaf className="h-10 w-10 text-white/90" />
         <p className="font-bold text-sm">{t("Fresh Food", "អាហារស្រស់")}</p>
         <Badge className="bg-white/25 text-white border-0 text-[10px]">{t("Up to 30% OFF", "ដល់ 30%")}</Badge>
       </div>
@@ -666,7 +672,7 @@ function ElectronicsSideBanner() {
   return (
     <Link href="/category/electronics">
       <div className="h-full min-h-48 bg-gradient-to-b from-indigo-700 to-blue-600 rounded-2xl flex flex-col items-center justify-center text-white text-center p-4 gap-2 hover:opacity-95 transition-opacity">
-        <span className="text-4xl">📱</span>
+        <Smartphone className="h-10 w-10 text-white/90" />
         <p className="font-bold text-sm">{t("Tech Sale", "បញ្ចុះតម្លៃ")}</p>
         <Badge className="bg-white/25 text-white border-0 text-[10px]">{t("New Arrivals", "ទំនិញថ្មី")}</Badge>
       </div>

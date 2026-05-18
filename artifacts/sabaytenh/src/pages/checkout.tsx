@@ -100,30 +100,13 @@ const PAYMENT_METHODS = [
   },
 ];
 
-// ─── QR Code Generator ────────────────────────────────────────────────────────
-function QRCodeGrid({ seed, size = 10 }: { seed: number; size?: number }) {
-  const cells = Array(size * size).fill(0).map((_, i) => {
-    const row = Math.floor(i / size);
-    const col = i % size;
-    // Finder pattern corners
-    if ((row < 3 && col < 3) || (row < 3 && col >= size - 3) || (row >= size - 3 && col < 3)) return true;
-    // Timing pattern
-    if (row === 4 || col === 4) return (row + col) % 2 === 0;
-    // Data modules
-    return ((i * 137 + seed * 31 + row * 17 + col * 7) % 100) > 45;
-  });
-
-  return (
-    <div
-      className="grid gap-[1.5px] p-2 bg-white rounded-lg"
-      style={{ gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`, width: 160, height: 160 }}
-    >
-      {cells.map((filled, i) => (
-        <div key={i} className={`rounded-[1px] ${filled ? "bg-gray-900" : "bg-white"}`} />
-      ))}
-    </div>
-  );
-}
+// ─── Real bank QR image map ────────────────────────────────────────────────────
+const QR_IMAGES: Partial<Record<string, string>> = {
+  [OrderInputPaymentMethod.aba]:    "/qr-aba.jpeg",
+  [OrderInputPaymentMethod.acleda]: "/qr-acleda.jpeg",
+  [OrderInputPaymentMethod.wing]:   "/qr-wing.jpeg",
+  [OrderInputPaymentMethod.khqr]:   "/qr-khqr.jpeg",
+};
 
 // ─── Payment QR Modal ─────────────────────────────────────────────────────────
 function PaymentModal({
@@ -234,11 +217,20 @@ function PaymentModal({
                 <p className="text-xs text-muted-foreground mb-3 text-center">
                   {t(`Scan with your ${method.label} app`, `ស្កែនដោយ app ${method.label} របស់អ្នក`)}
                 </p>
-                <div className="p-3 bg-white border-2 border-dashed border-primary/30 rounded-xl inline-block shadow-sm">
-                  <QRCodeGrid seed={Math.round(amount * 100 + method.value.length * 17)} size={11} />
-                </div>
+                {QR_IMAGES[method.value] ? (
+                  <div className="rounded-xl overflow-hidden shadow-md border border-border/30 w-48">
+                    <img
+                      src={QR_IMAGES[method.value]}
+                      alt={`${method.label} QR code`}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className={`${method.bg} rounded-xl p-5 flex items-center justify-center w-40 h-40`}>
+                    <span className="text-white/80 text-sm text-center font-medium">{method.label}</span>
+                  </div>
+                )}
                 <div className="mt-2 flex items-center gap-1.5">
-                  <span className="text-sm">{method.icon}</span>
                   <span className={`text-xs font-bold bg-gradient-to-r ${method.color} bg-clip-text text-transparent`}>{method.label}</span>
                   <ShieldCheck className="h-3.5 w-3.5 text-green-500" />
                 </div>
