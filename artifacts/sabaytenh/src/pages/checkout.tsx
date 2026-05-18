@@ -33,6 +33,7 @@ const PAYMENT_METHODS = [
     desc: "Any KHQR-compatible app",
     descKh: "ស្កែនដោយ app KHQR ណាមួយ",
     icon: "🇰🇭",
+    logo: "/logo-khqr.jpeg",
     color: "from-blue-700 to-red-600",
     bg: "bg-gradient-to-br from-blue-700 to-red-600",
     textColor: "text-white",
