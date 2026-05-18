@@ -16,5 +16,4 @@ export const OrderInputPaymentMethod = {
   acleda: 'acleda',
   canadia: 'canadia',
   wing: 'wing',
-  vatanak: 'vatanak',
 } as const;
