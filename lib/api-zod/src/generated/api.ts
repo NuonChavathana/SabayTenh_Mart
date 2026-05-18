@@ -62,6 +62,41 @@ export const GetMeResponse = zod.object({
 
 
 /**
+ * @summary Update current user profile
+ */
+export const UpdateProfileBody = zod.object({
+  "name": zod.string().optional(),
+  "phone": zod.string().optional()
+})
+
+export const UpdateProfileResponse = zod.object({
+  "id": zod.number(),
+  "email": zod.string(),
+  "name": zod.string(),
+  "phone": zod.string().nullish(),
+  "role": zod.enum(['customer', 'cashier', 'staff', 'admin']),
+  "createdAt": zod.string().optional()
+})
+
+
+/**
+ * @summary Change current user password
+ */
+export const changePasswordBodyNewPasswordMin = 6;
+
+
+
+export const ChangePasswordBody = zod.object({
+  "currentPassword": zod.string(),
+  "newPassword": zod.string().min(changePasswordBodyNewPasswordMin)
+})
+
+export const ChangePasswordResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
  * @summary List all categories
  */
 export const ListCategoriesResponseItem = zod.object({

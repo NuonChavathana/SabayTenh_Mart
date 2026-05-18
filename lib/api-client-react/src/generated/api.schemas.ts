@@ -21,6 +21,17 @@ export interface LoginInput {
   password: string;
 }
 
+export interface UpdateProfileInput {
+  name?: string;
+  phone?: string;
+}
+
+export interface ChangePasswordInput {
+  currentPassword: string;
+  /** @minLength 6 */
+  newPassword: string;
+}
+
 export type UserRole = typeof UserRole[keyof typeof UserRole];
 
 
@@ -370,6 +381,10 @@ export interface DailySales {
   revenue: number;
   orders: number;
 }
+
+export type ChangePassword200 = {
+  message: string;
+};
 
 export type ListProductsParams = {
 search?: string;

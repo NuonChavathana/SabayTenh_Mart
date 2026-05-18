@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { db, usersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { signToken, requireAuth } from "../lib/auth";
-import { RegisterUserBody, LoginUserBody, GetMeResponse } from "@workspace/api-zod";
+import { RegisterUserBody, LoginUserBody, GetMeResponse, UpdateProfileBody, ChangePasswordBody } from "@workspace/api-zod";
 
 const router: IRouter = Router();
 
@@ -65,6 +65,45 @@ router.get("/auth/me", requireAuth, async (req, res): Promise<void> => {
     return;
   }
   res.json(GetMeResponse.parse({ id: user.id, email: user.email, name: user.name, phone: user.phone, role: user.role, createdAt: user.createdAt.toISOString() }));
+});
+
+router.patch("/auth/me", requireAuth, async (req, res): Promise<void> => {
+  const parsed = UpdateProfileBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  const updates: { name?: string; phone?: string | null } = {};
+  if (parsed.data.name !== undefined) updates.name = parsed.data.name;
+  if (parsed.data.phone !== undefined) updates.phone = parsed.data.phone || null;
+  const [user] = await db.update(usersTable).set(updates).where(eq(usersTable.id, req.user!.userId)).returning();
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
+  res.json({ id: user.id, email: user.email, name: user.name, phone: user.phone, role: user.role, createdAt: user.createdAt.toISOString() });
+});
+
+router.post("/auth/change-password", requireAuth, async (req, res): Promise<void> => {
+  const parsed = ChangePasswordBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+  const { currentPassword, newPassword } = parsed.data;
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, req.user!.userId));
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
+  const valid = await bcrypt.compare(currentPassword, user.password);
+  if (!valid) {
+    res.status(400).json({ error: "Current password is incorrect" });
+    return;
+  }
+  const hashed = await bcrypt.hash(newPassword, 10);
+  await db.update(usersTable).set({ password: hashed }).where(eq(usersTable.id, req.user!.userId));
+  res.json({ message: "Password updated successfully" });
 });
 
 export default router;
