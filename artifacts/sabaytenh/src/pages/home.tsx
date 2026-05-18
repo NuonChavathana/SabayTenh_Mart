@@ -201,7 +201,7 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
             {categories?.map(cat => (
-              <Link key={cat.id} href={`/products?category=${cat.slug}`}>
+              <Link key={cat.id} href={`/category/${cat.slug}`}>
                 <div className="bg-white dark:bg-card border rounded-xl p-3 flex flex-col items-center gap-2 hover:shadow-md hover:border-primary/30 transition-all cursor-pointer text-center group">
                   <span className="text-3xl">{CATEGORY_ICONS[cat.slug] ?? "🛍️"}</span>
                   <span className="text-xs font-medium line-clamp-2 group-hover:text-primary transition-colors">

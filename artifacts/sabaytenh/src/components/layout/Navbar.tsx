@@ -58,7 +58,7 @@ export function Navbar() {
                 <Link href="/" onClick={() => setMobileOpen(false)} className="text-lg font-bold text-primary">SabayTenh</Link>
                 <Link href="/products" onClick={() => setMobileOpen(false)} className="text-sm font-medium hover:text-primary">{t("All Products", "ផលិតផលទាំងអស់")}</Link>
                 {categories?.map(c => (
-                  <Link key={c.id} href={`/products?category=${c.slug}`} onClick={() => setMobileOpen(false)} className="text-sm text-muted-foreground hover:text-primary">
+                  <Link key={c.id} href={`/category/${c.slug}`} onClick={() => setMobileOpen(false)} className="text-sm text-muted-foreground hover:text-primary">
                     {t(c.name, c.nameKh ?? c.name)}
                   </Link>
                 ))}
@@ -178,7 +178,7 @@ export function Navbar() {
             </Button>
           </Link>
           {categories?.slice(0, 10).map(cat => (
-            <Link key={cat.id} href={`/products?category=${cat.slug}`}>
+            <Link key={cat.id} href={`/category/${cat.slug}`}>
               <Button variant="ghost" size="sm" className="text-xs whitespace-nowrap">
                 {t(cat.name, cat.nameKh ?? cat.name)}
               </Button>

@@ -22,6 +22,7 @@ import AdminOrdersPage from "@/pages/admin/orders";
 import AdminProductsPage from "@/pages/admin/products";
 import InventoryPage from "@/pages/admin/inventory";
 import AdminUsersPage from "@/pages/admin/users";
+import CategoryPage from "@/pages/category";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -45,6 +46,7 @@ function Router() {
       <Route path="/register" component={RegisterPage} />
       <Route path="/products" component={ProductsPage} />
       <Route path="/products/:id" component={ProductDetailPage} />
+      <Route path="/category/:slug" component={CategoryPage} />
       <Route path="/cart" component={CartPage} />
       <Route path="/checkout" component={CheckoutPage} />
       <Route path="/orders" component={OrdersPage} />
