@@ -344,7 +344,9 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="left" className="w-72">
               <div className="flex flex-col gap-4 mt-6">
-                <Link href="/" onClick={() => setMobileOpen(false)} className="text-lg font-bold text-primary">SabayTenh</Link>
+                <Link href="/" onClick={() => setMobileOpen(false)}>
+                  <img src="/logo.png" alt="SabayTenh" className="h-10 w-auto object-contain" />
+                </Link>
                 <Link href="/products" onClick={() => setMobileOpen(false)} className="text-sm font-medium hover:text-primary">{t("All Products", "ផលិតផលទាំងអស់")}</Link>
                 {categories?.map(c => (
                   <Link key={c.id} href={`/category/${c.slug}`} onClick={() => setMobileOpen(false)} className="text-sm text-muted-foreground hover:text-primary">
@@ -357,9 +359,8 @@ export function Navbar() {
           </Sheet>
 
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 flex flex-col leading-none mr-2">
-            <span className="text-xl font-bold text-primary tracking-tight">SabayTenh</span>
-            <span className="text-xs text-muted-foreground font-medium hidden sm:block">សប្បាយទិញ</span>
+          <Link href="/" className="flex-shrink-0 mr-2">
+            <img src="/logo.png" alt="SabayTenh" className="h-10 w-auto object-contain" />
           </Link>
 
           {/* Smart Search — desktop */}

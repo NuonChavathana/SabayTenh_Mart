@@ -47,8 +47,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 lg:col-span-1">
             <div className="mb-3">
-              <span className="text-2xl font-bold text-white tracking-tight">SabayTenh</span>
-              <p className="text-primary text-sm font-medium">សប្បាយទិញ</p>
+              <img src="/logo.png" alt="SabayTenh" className="h-14 w-auto object-contain brightness-0 invert mb-1" />
             </div>
             <p className="text-sm leading-relaxed mb-5">
               {t(
