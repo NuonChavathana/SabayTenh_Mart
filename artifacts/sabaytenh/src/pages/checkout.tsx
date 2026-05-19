@@ -104,6 +104,7 @@ const QR_IMAGES: Partial<Record<string, string>> = {
   [OrderInputPaymentMethod.acleda]:  "/qr-acleda.jpeg",
   [OrderInputPaymentMethod.wing]:    "/qr-wing.jpeg",
   [OrderInputPaymentMethod.khqr]:    "/qr-khqr.jpeg",
+  [OrderInputPaymentMethod.canadia]: "/qr-vatanak.png",
 };
 
 // ─── Payment QR Modal ─────────────────────────────────────────────────────────
