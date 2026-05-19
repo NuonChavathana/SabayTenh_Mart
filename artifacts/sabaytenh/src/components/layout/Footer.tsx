@@ -9,7 +9,7 @@ const PAYMENT_METHODS = [
   { name: "ABA", color: "bg-blue-500" },
   { name: "ACLEDA", color: "bg-red-600" },
   { name: "Wing", color: "bg-purple-600" },
-  { name: "Canadia", color: "bg-emerald-600" },
+  { name: "Vatanak", color: "bg-emerald-600" },
   { name: "Cash", color: "bg-green-600" },
 ];
 

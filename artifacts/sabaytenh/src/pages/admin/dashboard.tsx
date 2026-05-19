@@ -24,7 +24,7 @@ const PAYMENT_LOGOS: Record<string, { logo: string; label: string }> = {
   khqr:    { logo: "/logo-khqr.jpeg",    label: "KHQR Bakong" },
   aba:     { logo: "/logo-aba.jpeg",     label: "ABA Bank" },
   acleda:  { logo: "/logo-acleda.jpeg",  label: "ACLEDA" },
-  canadia: { logo: "/logo-canadia.jpeg", label: "Canadia" },
+  canadia: { logo: "/logo-vatanak.jpeg", label: "Vatanak" },
   wing:    { logo: "/logo-wing.jpeg",    label: "Wing Money" },
   cash:    { logo: "",                   label: "Cash on Delivery" },
 };

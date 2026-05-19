@@ -50,7 +50,7 @@ const BANK_OPTIONS = [
   { key: "aba",     label: "ABA Bank",    logo: "/logo-aba.jpeg" },
   { key: "acleda",  label: "ACLEDA",      logo: "/logo-acleda.jpeg" },
   { key: "wing",    label: "Wing Money",  logo: "/logo-wing.jpeg" },
-  { key: "canadia", label: "Canadia",     logo: "/logo-canadia.jpeg" },
+  { key: "canadia", label: "Vatanak",     logo: "/logo-vatanak.jpeg" },
   { key: "khqr",    label: "KHQR Bakong", logo: "/logo-khqr.jpeg" },
 ];
 

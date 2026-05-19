@@ -605,11 +605,11 @@ function KhqrBanner() {
           <p className="text-xs uppercase tracking-wider text-white/70 mb-0.5">{t("Cambodia's Favourite", "ការចូលចិត្តរបស់កម្ពុជា")}</p>
           <h3 className="text-xl font-black">{t("Pay with KHQR", "ទូទាត់ជាមួយ KHQR 🇰🇭")}</h3>
           <p className="text-white/80 text-sm mt-0.5">
-            {t("Scan & pay instantly — ABA, Wing, ACLEDA, Canadia", "ស្កែន​ ដើម្បីទូទាត់ភ្លាមៗ — ABA, Wing, ACLEDA, Canadia")}
+            {t("Scan & pay instantly — ABA, Wing, ACLEDA, Vatanak", "ស្កែន​ ដើម្បីទូទាត់ភ្លាមៗ — ABA, Wing, ACLEDA, វត្តនៈ")}
           </p>
         </div>
         <div className="flex gap-2 flex-wrap justify-center">
-          {["🇰🇭 KHQR", "ABA", "WING", "ACLEDA", "Canadia"].map(m => (
+          {["🇰🇭 KHQR", "ABA", "WING", "ACLEDA", "Vatanak"].map(m => (
             <div key={m} className="bg-white/15 border border-white/25 rounded-xl px-3 py-2 text-white text-sm font-bold">{m}</div>
           ))}
         </div>

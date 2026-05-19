@@ -68,7 +68,7 @@ function stepTime(createdAt: string, offsetMs: number) {
 // ── Payment method display name ────────────────────────────────────────────────
 const PM_LABELS: Record<string, string> = {
   khqr: "KHQR Bakong", aba: "ABA Bank", acleda: "ACLEDA",
-  canadia: "Canadia Bank", wing: "Wing Money", cash: "Cash on Delivery",
+  canadia: "Vatanak Bank", wing: "Wing Money", cash: "Cash on Delivery",
 };
 
 export default function OrderDetailPage() {

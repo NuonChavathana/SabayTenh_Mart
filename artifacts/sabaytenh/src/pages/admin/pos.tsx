@@ -35,7 +35,7 @@ const PAYMENT_METHODS = [
   { value: OrderInputPaymentMethod.khqr,    label: "KHQR Bakong",  labelKh: "KHQR",      logo: "/logo-khqr.jpeg",     bg: "bg-blue-600" },
   { value: OrderInputPaymentMethod.aba,     label: "ABA Bank",     labelKh: "ABA",       logo: "/logo-aba.jpeg",      bg: "bg-blue-500" },
   { value: OrderInputPaymentMethod.acleda,  label: "ACLEDA",       labelKh: "ACLEDA",    logo: "/logo-acleda.jpeg",   bg: "bg-red-500" },
-  { value: OrderInputPaymentMethod.canadia, label: "Canadia",      labelKh: "ខេណាឌីយ៉ា",  logo: "/logo-canadia.jpeg",  bg: "bg-emerald-500" },
+  { value: OrderInputPaymentMethod.canadia, label: "Vatanak",      labelKh: "វត្តនៈ",        logo: "/logo-vatanak.jpeg",  bg: "bg-emerald-500" },
   { value: OrderInputPaymentMethod.wing,    label: "Wing Money",   labelKh: "Wing",      logo: "/logo-wing.jpeg",     bg: "bg-purple-500" },
 ];
 
