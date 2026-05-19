@@ -113,8 +113,8 @@ function Sidebar({ onItemClick }: { onItemClick?: () => void }) {
       {/* Logo */}
       <div className="p-4 border-b">
         <Link href="/" onClick={onItemClick}>
-          <img src="/logo.png" alt="SabayTenh" className="h-9 w-auto object-contain" />
-          <span className="text-xs text-muted-foreground">{t("Admin Panel", "ផ្ទាំងរដ្ឋបាល")}</span>
+          <img src="/logo.png" alt="SabayTenh" className="h-12 w-auto object-contain drop-shadow-sm" />
+          <span className="text-xs text-muted-foreground mt-0.5">{t("Admin Panel", "ផ្ទាំងរដ្ឋបាល")}</span>
         </Link>
       </div>
 
@@ -179,7 +179,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </Button>
-          <img src="/logo.png" alt="SabayTenh" className="h-8 w-auto object-contain" />
+          <img src="/logo.png" alt="SabayTenh" className="h-10 w-auto object-contain drop-shadow-sm" />
         </header>
 
         <main className="flex-1 p-4 md:p-6">

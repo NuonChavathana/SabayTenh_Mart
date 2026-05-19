@@ -334,7 +334,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full bg-white/95 dark:bg-card/95 backdrop-blur-sm border-b shadow-sm">
       <div className="container mx-auto px-4">
         {/* Top bar */}
-        <div className="flex items-center gap-3 h-16">
+        <div className="flex items-center gap-3 h-20">
           {/* Mobile menu */}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
@@ -345,7 +345,7 @@ export function Navbar() {
             <SheetContent side="left" className="w-72">
               <div className="flex flex-col gap-4 mt-6">
                 <Link href="/" onClick={() => setMobileOpen(false)}>
-                  <img src="/logo.png" alt="SabayTenh" className="h-10 w-auto object-contain" />
+                  <img src="/logo.png" alt="SabayTenh" className="h-16 w-auto object-contain" />
                 </Link>
                 <Link href="/products" onClick={() => setMobileOpen(false)} className="text-sm font-medium hover:text-primary">{t("All Products", "ផលិតផលទាំងអស់")}</Link>
                 {categories?.map(c => (
@@ -360,7 +360,7 @@ export function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 mr-2">
-            <img src="/logo.png" alt="SabayTenh" className="h-10 w-auto object-contain" />
+            <img src="/logo.png" alt="SabayTenh" className="h-[72px] w-auto object-contain" />
           </Link>
 
           {/* Smart Search — desktop */}

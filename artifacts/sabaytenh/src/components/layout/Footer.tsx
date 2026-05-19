@@ -47,7 +47,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 lg:col-span-1">
             <div className="mb-3">
-              <img src="/logo.png" alt="SabayTenh" className="h-14 w-auto object-contain brightness-0 invert mb-1" />
+              <img src="/logo.png" alt="SabayTenh" className="h-16 w-auto object-contain brightness-0 invert mb-2" />
             </div>
             <p className="text-sm leading-relaxed mb-5">
               {t(
