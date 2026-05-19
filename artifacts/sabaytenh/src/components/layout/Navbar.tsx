@@ -344,8 +344,12 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="left" className="w-72">
               <div className="flex flex-col gap-4 mt-6">
-                <Link href="/" onClick={() => setMobileOpen(false)}>
-                  <img src="/logo.png" alt="SabayTenh" className="h-16 w-auto object-contain" />
+                <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
+                  <img src="/logo-icon.png" alt="SabayTenh" className="h-12 w-12 rounded-full object-cover ring-2 ring-primary/20" />
+                  <span className="flex flex-col leading-none">
+                    <span className="text-xl font-extrabold tracking-tight" style={{ color: "#1e2d6b" }}>Sabay<span style={{ color: "#e8386a" }}>Tenh</span></span>
+                    <span className="text-xs font-semibold" style={{ color: "#F97316" }}>សប្បាយទិញ</span>
+                  </span>
                 </Link>
                 <Link href="/products" onClick={() => setMobileOpen(false)} className="text-sm font-medium hover:text-primary">{t("All Products", "ផលិតផលទាំងអស់")}</Link>
                 {categories?.map(c => (
@@ -359,8 +363,12 @@ export function Navbar() {
           </Sheet>
 
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 mr-2">
-            <img src="/logo.png" alt="SabayTenh" className="h-[72px] w-auto object-contain" />
+          <Link href="/" className="flex-shrink-0 mr-2 flex items-center gap-2">
+            <img src="/logo-icon.png" alt="SabayTenh" className="h-11 w-11 rounded-full object-cover ring-2 ring-primary/20" />
+            <span className="hidden sm:flex flex-col leading-none">
+              <span className="text-lg font-extrabold tracking-tight" style={{ color: "#1e2d6b" }}>Sabay<span style={{ color: "#e8386a" }}>Tenh</span></span>
+              <span className="text-[11px] font-semibold" style={{ color: "#F97316" }}>សប្បាយទិញ</span>
+            </span>
           </Link>
 
           {/* Smart Search — desktop */}
