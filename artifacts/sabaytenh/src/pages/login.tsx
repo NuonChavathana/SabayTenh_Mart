@@ -38,9 +38,16 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-6">
-          <Link href="/" className="inline-flex flex-col items-center">
-            <span className="text-3xl font-bold text-primary">SabayTenh</span>
-            <span className="text-sm text-muted-foreground">សប្បាយទិញ</span>
+          <Link href="/" className="inline-flex flex-col items-center gap-2 group">
+            <div className="p-[3px] rounded-full bg-gradient-to-br from-orange-400 via-rose-400 to-pink-600 shadow-xl group-hover:shadow-orange-200 transition-shadow">
+              <img src="/logo-icon.png" alt="SabayTenh" className="h-16 w-16 rounded-full object-contain bg-white p-1" />
+            </div>
+            <span className="flex flex-col items-center leading-none mt-1">
+              <span className="text-2xl font-black tracking-tight leading-none">
+                <span style={{ color: "#1e2d6b" }}>Sabay</span><span style={{ color: "#e8386a" }}>Tenh</span>
+              </span>
+              <span className="text-xs font-semibold mt-1" style={{ color: "#F97316" }}>សប្បាយទិញ</span>
+            </span>
           </Link>
         </div>
         <Card>

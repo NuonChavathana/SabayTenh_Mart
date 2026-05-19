@@ -344,8 +344,16 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="left" className="w-72">
               <div className="flex flex-col gap-4 mt-6">
-                <Link href="/" onClick={() => setMobileOpen(false)}>
-                  <img src="/logo.png" alt="SabayTenh" className="h-20 w-auto object-contain" />
+                <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-3">
+                  <div className="p-[2.5px] rounded-full bg-gradient-to-br from-orange-400 via-rose-400 to-pink-600 shadow-md">
+                    <img src="/logo-icon.png" alt="SabayTenh" className="h-12 w-12 rounded-full object-contain bg-white p-0.5" />
+                  </div>
+                  <span className="flex flex-col leading-none">
+                    <span className="text-xl font-black tracking-tight leading-none">
+                      <span style={{ color: "#1e2d6b" }}>Sabay</span><span style={{ color: "#e8386a" }}>Tenh</span>
+                    </span>
+                    <span className="text-xs font-bold mt-1" style={{ color: "#F97316" }}>សប្បាយទិញ</span>
+                  </span>
                 </Link>
                 <Link href="/products" onClick={() => setMobileOpen(false)} className="text-sm font-medium hover:text-primary">{t("All Products", "ផលិតផលទាំងអស់")}</Link>
                 {categories?.map(c => (
@@ -359,8 +367,16 @@ export function Navbar() {
           </Sheet>
 
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 mr-2">
-            <img src="/logo.png" alt="SabayTenh" className="h-[72px] w-auto object-contain" />
+          <Link href="/" className="flex-shrink-0 mr-3 flex items-center gap-2.5 group">
+            <div className="p-[2.5px] rounded-full bg-gradient-to-br from-orange-400 via-rose-400 to-pink-600 shadow-lg group-hover:shadow-orange-200 transition-shadow">
+              <img src="/logo-icon.png" alt="SabayTenh" className="h-11 w-11 rounded-full object-contain bg-white p-0.5" />
+            </div>
+            <span className="hidden sm:flex flex-col leading-none">
+              <span className="text-[19px] font-black tracking-tight leading-none">
+                <span style={{ color: "#1e2d6b" }}>Sabay</span><span style={{ color: "#e8386a" }}>Tenh</span>
+              </span>
+              <span className="text-[10px] font-bold tracking-wide mt-0.5" style={{ color: "#F97316" }}>សប្បាយទិញ</span>
+            </span>
           </Link>
 
           {/* Smart Search — desktop */}
