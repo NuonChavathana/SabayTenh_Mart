@@ -39,22 +39,14 @@ const PAYMENT_METHODS = [
   { value: OrderInputPaymentMethod.wing,    label: "Wing Money",   labelKh: "Wing",      logo: "/logo-wing.jpeg",     bg: "bg-purple-500" },
 ];
 
-// ─── QR Grid ─────────────────────────────────────────────────────────────────
-function QRGrid({ seed }: { seed: number }) {
-  const size = 10;
-  const cells = Array(size * size).fill(0).map((_, i) => {
-    const row = Math.floor(i / size);
-    const col = i % size;
-    if ((row < 3 && col < 3) || (row < 3 && col >= size - 3) || (row >= size - 3 && col < 3)) return true;
-    if (row === 4 || col === 4) return (row + col) % 2 === 0;
-    return ((i * 137 + seed * 31 + row * 17 + col * 7) % 100) > 45;
-  });
-  return (
-    <div className="grid gap-[1.5px] p-2 bg-white rounded" style={{ gridTemplateColumns: `repeat(${size}, 1fr)`, width: 120, height: 120 }}>
-      {cells.map((f, i) => <div key={i} className={`rounded-[1px] ${f ? "bg-gray-900" : "bg-white"}`} />)}
-    </div>
-  );
-}
+// ─── Real QR image map ────────────────────────────────────────────────────────
+const QR_IMAGES: Partial<Record<string, string>> = {
+  [OrderInputPaymentMethod.khqr]:    "/qr-khqr.jpeg",
+  [OrderInputPaymentMethod.aba]:     "/qr-aba.jpeg",
+  [OrderInputPaymentMethod.acleda]:  "/qr-acleda.jpeg",
+  [OrderInputPaymentMethod.wing]:    "/qr-wing.jpeg",
+  [OrderInputPaymentMethod.canadia]: "/qr-vatanak.png",
+};
 
 // ─── Receipt Modal ────────────────────────────────────────────────────────────
 function ReceiptModal({
@@ -107,9 +99,13 @@ function ReceiptModal({
             </span>
           </div>
 
-          {isQR && (
+          {isQR && QR_IMAGES[paymentMethod] && (
             <div className="flex flex-col items-center mt-3">
-              <QRGrid seed={Math.round(total * 100 + orderNumber)} />
+              <img
+                src={QR_IMAGES[paymentMethod]}
+                alt="Payment QR"
+                className="w-36 h-36 object-contain rounded-lg border border-muted"
+              />
               <p className="text-muted-foreground mt-1 text-center">
                 {t("Scan to confirm payment", "ស្កែនដើម្បីបញ្ជាក់ការទូទាត់")}
               </p>
