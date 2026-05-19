@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, ordersTable, orderItemsTable, cartsTable, cartItemsTable, productsTable, usersTable } from "@workspace/db";
+import { db, ordersTable, orderItemsTable, cartsTable, cartItemsTable, productsTable, usersTable, couponsTable } from "@workspace/db";
 import { eq, desc, sql, and } from "drizzle-orm";
 import { requireAuth, requireRole } from "../lib/auth";
 import { CreateOrderBody, UpdateOrderStatusBody, UpdateOrderStatusParams, GetOrderParams, ListOrdersQueryParams } from "@workspace/api-zod";
@@ -77,7 +77,18 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
   if (cartItems.length === 0) { res.status(400).json({ error: "Cart is empty" }); return; }
 
   const subtotal = cartItems.reduce((sum, i) => sum + parseFloat(String(i.price)) * i.quantity, 0);
-  const discount = 0;
+
+  let discount = 0;
+  if (parsed.data.couponCode) {
+    const [coupon] = await db.select().from(couponsTable).where(eq(couponsTable.code, parsed.data.couponCode.toUpperCase()));
+    if (coupon && coupon.isActive && (coupon.maxUses === null || coupon.usedCount < coupon.maxUses)) {
+      const value = parseFloat(String(coupon.value));
+      if (coupon.type === "percent") discount = subtotal * (value / 100);
+      else if (coupon.type === "flat") discount = Math.min(value, subtotal);
+      await db.update(couponsTable).set({ usedCount: coupon.usedCount + 1 }).where(eq(couponsTable.id, coupon.id));
+    }
+  }
+
   const total = subtotal - discount;
 
   const [order] = await db.insert(ordersTable).values({

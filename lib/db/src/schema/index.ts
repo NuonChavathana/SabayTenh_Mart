@@ -7,3 +7,4 @@ export * from "./wishlists";
 export * from "./orders";
 export * from "./reviews";
 export * from "./inventory_logs";
+export * from "./coupons";

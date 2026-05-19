@@ -9,18 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useGetCart, useCreateOrder, OrderInputPaymentMethod } from "@workspace/api-client-react";
+import { useGetCart, useCreateOrder, useValidateCoupon, OrderInputPaymentMethod } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 
-// ─── Promo codes (same as cart page) ──────────────────────────────────────────
-const PROMO_CODES: Record<string, { type: "percent" | "flat"; value: number; label: string }> = {
-  SAVE10:   { type: "percent", value: 10, label: "10% off" },
-  WELCOME5: { type: "flat",    value: 5,  label: "$5 off" },
-  FREESHIP: { type: "flat",    value: 0,  label: "Free shipping" },
-  KHMER20:  { type: "percent", value: 20, label: "20% off" },
-  STUDENT:  { type: "percent", value: 15, label: "15% off" },
-};
 const DELIVERY_FREE_THRESHOLD = 30;
 const DELIVERY_FEE = 3.00;
 
@@ -317,9 +309,30 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<OrderInputPaymentMethod>(OrderInputPaymentMethod.khqr);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [promoInput, setPromoInput] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState<{ code: string; type: "percent" | "flat"; value: number; label: string } | null>(null);
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; type: "percent" | "flat" | "free_shipping"; value: number } | null>(null);
 
   const { data: cart } = useGetCart({ query: { queryKey: ["/api/cart"] } });
+  const validateCoupon = useValidateCoupon({
+    mutation: {
+      onSuccess: (result) => {
+        if (result.valid && result.coupon) {
+          setAppliedPromo({ code: result.coupon.code, type: result.coupon.type as "percent" | "flat" | "free_shipping", value: Number(result.coupon.value) });
+          setPromoInput("");
+          const desc = result.coupon.type === "percent"
+            ? `${result.coupon.value}% off`
+            : result.coupon.type === "flat"
+              ? `$${Number(result.coupon.value).toFixed(2)} off`
+              : t("Free shipping", "ដឹកឥតគិតថ្លៃ");
+          toast({ title: t(`Promo applied: ${desc}`, `ប្រូម៉ូបានអនុវត្ត: ${desc}`) });
+        }
+      },
+      onError: (err: any) => {
+        const msg = err?.response?.data?.message ?? t("Invalid or expired promo code.", "លេខកូដប្រូម៉ូមិនត្រឹមត្រូវ ឬផុតកំណត់។");
+        toast({ title: msg, variant: "destructive" });
+      },
+    },
+  });
+
   const createOrder = useCreateOrder({
     mutation: {
       onSuccess: (order) => {
@@ -335,32 +348,26 @@ export default function CheckoutPage() {
 
   const applyPromo = () => {
     const code = promoInput.trim().toUpperCase();
-    const promo = PROMO_CODES[code];
-    if (!promo) {
-      toast({ title: t("Invalid promo code.", "លេខកូដប្រូម៉ូមិនត្រឹមត្រូវ។"), variant: "destructive" });
-      return;
-    }
-    setAppliedPromo({ code, ...promo });
-    setPromoInput("");
-    toast({ title: t(`Promo applied: ${promo.label}`, `ប្រូម៉ូបានអនុវត្ត: ${promo.label}`) });
+    if (!code) return;
+    validateCoupon.mutate({ data: { code, orderAmount: subtotal - cartDiscount } });
   };
+
+  // Price calculations (must be before applyPromo uses subtotal)
+  const subtotal = cart ? Number(cart.subtotal) : 0;
+  const cartDiscount = cart ? Number(cart.discount) : 0;
 
   if (!cart || cart.items.length === 0) {
     navigate("/cart");
     return null;
   }
-
-  // Price calculations
-  const subtotal = Number(cart.subtotal);
-  const cartDiscount = Number(cart.discount);
   const afterCartDiscount = subtotal - cartDiscount;
   let promoDiscount = 0;
   if (appliedPromo) {
     if (appliedPromo.type === "percent") promoDiscount = afterCartDiscount * (appliedPromo.value / 100);
-    else promoDiscount = Math.min(appliedPromo.value, afterCartDiscount);
+    else if (appliedPromo.type === "flat") promoDiscount = Math.min(appliedPromo.value, afterCartDiscount);
   }
   const afterPromo = afterCartDiscount - promoDiscount;
-  const deliveryFee = (appliedPromo?.code === "FREESHIP" || afterPromo >= DELIVERY_FREE_THRESHOLD) ? 0 : DELIVERY_FEE;
+  const deliveryFee = (appliedPromo?.type === "free_shipping" || afterPromo >= DELIVERY_FREE_THRESHOLD) ? 0 : DELIVERY_FEE;
   const grandTotal = afterPromo + deliveryFee;
 
   const selectedPayment = PAYMENT_METHODS.find(m => m.value === paymentMethod)!;
@@ -386,6 +393,7 @@ export default function CheckoutPage() {
       data: {
         shippingAddress: `${address}${city ? ", " + city : ""}`,
         paymentMethod,
+        ...(appliedPromo ? { couponCode: appliedPromo.code } : {}),
       },
     });
   };
@@ -469,7 +477,11 @@ export default function CheckoutPage() {
                           <div className="flex items-center gap-2">
                             <Percent className="h-3.5 w-3.5 text-green-600" />
                             <span className="text-sm font-semibold text-green-700 dark:text-green-400">{appliedPromo.code}</span>
-                            <span className="text-xs text-green-600">— {appliedPromo.label}</span>
+                            <span className="text-xs text-green-600">— {
+                              appliedPromo.type === "percent" ? `${appliedPromo.value}% off`
+                              : appliedPromo.type === "flat" ? `$${appliedPromo.value.toFixed(2)} off`
+                              : t("Free shipping", "ដឹកឥតគិតថ្លៃ")
+                            }</span>
                           </div>
                           <button onClick={() => setAppliedPromo(null)} className="text-muted-foreground hover:text-destructive transition-colors">
                             <X className="h-4 w-4" />

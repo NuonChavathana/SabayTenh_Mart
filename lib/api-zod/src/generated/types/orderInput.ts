@@ -11,4 +11,5 @@ export interface OrderInput {
   paymentMethod: OrderInputPaymentMethod;
   shippingAddress: string;
   note?: string;
+  couponCode?: string;
 }

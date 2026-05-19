@@ -19,6 +19,7 @@ tags:
   - name: inventory
   - name: dashboard
   - name: users
+  - name: coupons
 
 paths:
   /healthz:
@@ -711,6 +712,97 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
 
+  /coupons/validate:
+    post:
+      operationId: validateCoupon
+      tags: [coupons]
+      summary: Validate a coupon code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CouponValidateInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CouponValidateResult"
+        "404":
+          description: Coupon not found or invalid
+
+  /coupons:
+    get:
+      operationId: listCoupons
+      tags: [coupons]
+      summary: List all coupons (admin)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Coupon"
+    post:
+      operationId: createCoupon
+      tags: [coupons]
+      summary: Create a coupon (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CouponInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+
+  /coupons/{id}:
+    patch:
+      operationId: updateCoupon
+      tags: [coupons]
+      summary: Update a coupon (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CouponUpdateInput"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+    delete:
+      operationId: deleteCoupon
+      tags: [coupons]
+      summary: Delete a coupon (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
 components:
   schemas:
     HealthStatus:
@@ -1124,6 +1216,95 @@ components:
         shippingAddress:
           type: string
         note:
+          type: string
+        couponCode:
+          type: string
+
+    Coupon:
+      type: object
+      required: [id, code, type, value, minOrder, usedCount, isActive, createdAt]
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        type:
+          type: string
+          enum: [percent, flat, free_shipping]
+        value:
+          type: number
+        minOrder:
+          type: number
+        maxUses:
+          type: ["integer", "null"]
+        usedCount:
+          type: integer
+        isActive:
+          type: boolean
+        expiresAt:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    CouponInput:
+      type: object
+      required: [code, type, value]
+      properties:
+        code:
+          type: string
+        type:
+          type: string
+          enum: [percent, flat, free_shipping]
+        value:
+          type: number
+        minOrder:
+          type: number
+        maxUses:
+          type: ["integer", "null"]
+        isActive:
+          type: boolean
+        expiresAt:
+          type: ["string", "null"]
+
+    CouponUpdateInput:
+      type: object
+      properties:
+        code:
+          type: string
+        type:
+          type: string
+          enum: [percent, flat, free_shipping]
+        value:
+          type: number
+        minOrder:
+          type: number
+        maxUses:
+          type: ["integer", "null"]
+        isActive:
+          type: boolean
+        expiresAt:
+          type: ["string", "null"]
+
+    CouponValidateInput:
+      type: object
+      required: [code]
+      properties:
+        code:
+          type: string
+        orderAmount:
+          type: number
+
+    CouponValidateResult:
+      type: object
+      required: [valid, coupon]
+      properties:
+        valid:
+          type: boolean
+        coupon:
+          $ref: "#/components/schemas/Coupon"
+        discountAmount:
+          type: number
+        message:
           type: string
 
     OrderStatusUpdate:

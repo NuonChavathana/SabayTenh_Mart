@@ -323,6 +323,85 @@ export interface OrderInput {
   paymentMethod: OrderInputPaymentMethod;
   shippingAddress: string;
   note?: string;
+  couponCode?: string;
+}
+
+export type CouponType = typeof CouponType[keyof typeof CouponType];
+
+
+export const CouponType = {
+  percent: 'percent',
+  flat: 'flat',
+  free_shipping: 'free_shipping',
+} as const;
+
+export interface Coupon {
+  id: number;
+  code: string;
+  type: CouponType;
+  value: number;
+  minOrder: number;
+  /** @nullable */
+  maxUses?: number | null;
+  usedCount: number;
+  isActive: boolean;
+  /** @nullable */
+  expiresAt?: string | null;
+  createdAt: string;
+}
+
+export type CouponInputType = typeof CouponInputType[keyof typeof CouponInputType];
+
+
+export const CouponInputType = {
+  percent: 'percent',
+  flat: 'flat',
+  free_shipping: 'free_shipping',
+} as const;
+
+export interface CouponInput {
+  code: string;
+  type: CouponInputType;
+  value: number;
+  minOrder?: number;
+  /** @nullable */
+  maxUses?: number | null;
+  isActive?: boolean;
+  /** @nullable */
+  expiresAt?: string | null;
+}
+
+export type CouponUpdateInputType = typeof CouponUpdateInputType[keyof typeof CouponUpdateInputType];
+
+
+export const CouponUpdateInputType = {
+  percent: 'percent',
+  flat: 'flat',
+  free_shipping: 'free_shipping',
+} as const;
+
+export interface CouponUpdateInput {
+  code?: string;
+  type?: CouponUpdateInputType;
+  value?: number;
+  minOrder?: number;
+  /** @nullable */
+  maxUses?: number | null;
+  isActive?: boolean;
+  /** @nullable */
+  expiresAt?: string | null;
+}
+
+export interface CouponValidateInput {
+  code: string;
+  orderAmount?: number;
+}
+
+export interface CouponValidateResult {
+  valid: boolean;
+  coupon: Coupon;
+  discountAmount?: number;
+  message?: string;
 }
 
 export type OrderStatusUpdateStatus = typeof OrderStatusUpdateStatus[keyof typeof OrderStatusUpdateStatus];

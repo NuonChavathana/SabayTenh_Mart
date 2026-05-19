@@ -543,7 +543,8 @@ export const ListOrdersResponse = zod.array(ListOrdersResponseItem)
 export const CreateOrderBody = zod.object({
   "paymentMethod": zod.enum(['cash', 'khqr', 'aba', 'acleda', 'canadia', 'wing']),
   "shippingAddress": zod.string(),
-  "note": zod.string().optional()
+  "note": zod.string().optional(),
+  "couponCode": zod.string().optional()
 })
 
 
@@ -749,6 +750,104 @@ export const UpdateUserRoleResponse = zod.object({
   "phone": zod.string().nullish(),
   "role": zod.enum(['customer', 'cashier', 'staff', 'admin']),
   "createdAt": zod.string().optional()
+})
+
+
+/**
+ * @summary Validate a coupon code
+ */
+export const ValidateCouponBody = zod.object({
+  "code": zod.string(),
+  "orderAmount": zod.number().optional()
+})
+
+export const ValidateCouponResponse = zod.object({
+  "valid": zod.boolean(),
+  "coupon": zod.object({
+  "id": zod.number(),
+  "code": zod.string(),
+  "type": zod.enum(['percent', 'flat', 'free_shipping']),
+  "value": zod.number(),
+  "minOrder": zod.number(),
+  "maxUses": zod.number().nullish(),
+  "usedCount": zod.number(),
+  "isActive": zod.boolean(),
+  "expiresAt": zod.string().nullish(),
+  "createdAt": zod.string()
+}),
+  "discountAmount": zod.number().optional(),
+  "message": zod.string().optional()
+})
+
+
+/**
+ * @summary List all coupons (admin)
+ */
+export const ListCouponsResponseItem = zod.object({
+  "id": zod.number(),
+  "code": zod.string(),
+  "type": zod.enum(['percent', 'flat', 'free_shipping']),
+  "value": zod.number(),
+  "minOrder": zod.number(),
+  "maxUses": zod.number().nullish(),
+  "usedCount": zod.number(),
+  "isActive": zod.boolean(),
+  "expiresAt": zod.string().nullish(),
+  "createdAt": zod.string()
+})
+export const ListCouponsResponse = zod.array(ListCouponsResponseItem)
+
+
+/**
+ * @summary Create a coupon (admin)
+ */
+export const CreateCouponBody = zod.object({
+  "code": zod.string(),
+  "type": zod.enum(['percent', 'flat', 'free_shipping']),
+  "value": zod.number(),
+  "minOrder": zod.number().optional(),
+  "maxUses": zod.number().nullish(),
+  "isActive": zod.boolean().optional(),
+  "expiresAt": zod.string().nullish()
+})
+
+
+/**
+ * @summary Update a coupon (admin)
+ */
+export const UpdateCouponParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const UpdateCouponBody = zod.object({
+  "code": zod.string().optional(),
+  "type": zod.enum(['percent', 'flat', 'free_shipping']).optional(),
+  "value": zod.number().optional(),
+  "minOrder": zod.number().optional(),
+  "maxUses": zod.number().nullish(),
+  "isActive": zod.boolean().optional(),
+  "expiresAt": zod.string().nullish()
+})
+
+export const UpdateCouponResponse = zod.object({
+  "id": zod.number(),
+  "code": zod.string(),
+  "type": zod.enum(['percent', 'flat', 'free_shipping']),
+  "value": zod.number(),
+  "minOrder": zod.number(),
+  "maxUses": zod.number().nullish(),
+  "usedCount": zod.number(),
+  "isActive": zod.boolean(),
+  "expiresAt": zod.string().nullish(),
+  "createdAt": zod.string()
+})
+
+
+/**
+ * @summary Delete a coupon (admin)
+ */
+export const DeleteCouponParams = zod.object({
+  "id": zod.coerce.number()
 })
 
 

@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { Link, useLocation } from "wouter";
 import {
   LayoutDashboard, ShoppingBag, Package, Users, Boxes,
-  ChevronRight, Menu, Home, ShoppingCart
+  ChevronRight, Menu, Home, ShoppingCart, Ticket,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -55,6 +55,14 @@ const NAV_ITEMS = [
     icon: Users,
     label: "Users",
     labelKh: "អ្នកប្រើ",
+    roles: ["admin"],
+    exact: false,
+  },
+  {
+    href: "/admin/coupons",
+    icon: Ticket,
+    label: "Coupons",
+    labelKh: "គូប៉ុង",
     roles: ["admin"],
     exact: false,
   },
