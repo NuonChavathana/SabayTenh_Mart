@@ -63,3 +63,10 @@ backend/uploads/
 
 # Local database files
 backend/data/
+
+frontend/mockup-sandbox/
+
+.replit
+.replitignore
+replit.md
+scripts/
