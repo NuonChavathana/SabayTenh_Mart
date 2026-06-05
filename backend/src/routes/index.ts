@@ -1,0 +1,32 @@
+import { Router } from "express";
+import authRoutes from "./auth";
+import productRoutes from "./products";
+import categoryRoutes from "./categories";
+import brandRoutes from "./brands";
+import cartRoutes from "./cart";
+import wishlistRoutes from "./wishlist";
+import orderRoutes from "./orders";
+import dashboardRoutes from "./dashboard";
+import inventoryRoutes from "./inventory";
+import reviewRoutes from "./reviews";
+import userRoutes from "./users";
+import couponRoutes from "./coupons";
+import telegramRoutes from "./telegram";
+
+const router = Router();
+
+router.use("/auth", authRoutes);
+router.use("/products", productRoutes);
+router.use("/categories", categoryRoutes);
+router.use("/brands", brandRoutes);
+router.use("/cart", cartRoutes);
+router.use("/wishlist", wishlistRoutes);
+router.use("/orders", orderRoutes);
+router.use("/dashboard", dashboardRoutes);
+router.use("/inventory", inventoryRoutes);
+router.use("/users", userRoutes);
+router.use("/coupons", couponRoutes);
+router.use("/telegram", telegramRoutes);
+router.use("/reviews", reviewRoutes);
+router.use("/products", reviewRoutes);
+export default router;

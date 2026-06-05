@@ -11,6 +11,9 @@ out-tsc
 # dependencies
 node_modules
 
+# local sqlite database
+database/data/
+
 # IDEs and editors
 /.idea
 .project
@@ -47,3 +50,16 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Environment variables
+.env
+.env.local
+
+# Uploaded images
+backend/uploads/
+
+# TypeScript map files
+**/*.d.ts.map
+
+# Local database files
+backend/data/
