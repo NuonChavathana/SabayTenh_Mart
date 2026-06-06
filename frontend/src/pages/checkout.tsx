@@ -17,7 +17,6 @@ import { toast } from "@/hooks/use-toast";
 const DELIVERY_FREE_THRESHOLD = 30;
 const DELIVERY_FEE = 3.00;
 
-// ─── Payment config ───────────────────────────────────────────────────────────
 const PAYMENT_METHODS = [
   {
     value: OrderInputPaymentMethod.khqr,
@@ -99,7 +98,6 @@ const PAYMENT_METHODS = [
   },
 ];
 
-// ─── Real bank QR image map ────────────────────────────────────────────────────
 const QR_IMAGES: Partial<Record<string, string>> = {
   [OrderInputPaymentMethod.aba]:     "/qr-aba.jpeg",
   [OrderInputPaymentMethod.acleda]:  "/qr-acleda.jpeg",
@@ -108,22 +106,27 @@ const QR_IMAGES: Partial<Record<string, string>> = {
   [OrderInputPaymentMethod.canadia]: "/qr-vatanak.png",
 };
 
-// ─── Payment QR Modal ─────────────────────────────────────────────────────────
 function PaymentModal({
   method,
   amount,
+  subtotal,
+  discount,
+  deliveryFee,
   onConfirm,
   onCancel,
   isPending,
 }: {
   method: typeof PAYMENT_METHODS[0];
   amount: number;
+  subtotal: number;
+  discount: number;
+  deliveryFee: number;
   onConfirm: () => void;
   onCancel: () => void;
   isPending: boolean;
 }) {
   const { t } = useLanguage();
-  const [countdown, setCountdown] = useState(300); // 5 min
+  const [countdown, setCountdown] = useState(300);
   const [simulating, setSimulating] = useState(false);
   const [paid, setPaid] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -236,11 +239,35 @@ function PaymentModal({
                 </div>
               </div>
 
-              <div className="bg-muted/40 rounded-lg p-3 text-center mb-4">
-                <p className="text-xs text-muted-foreground">
-                  {t("Amount", "ចំនួន")}: <span className="font-bold text-foreground text-sm">${amount.toFixed(2)}</span>
-                </p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
+              {/* Price breakdown in modal */}
+              <div className="bg-muted/40 rounded-lg p-3 mb-4 space-y-1">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>{t("Subtotal", "តម្លៃរង")}</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                {discount > 0 && (
+                  <div className="flex justify-between text-xs text-destructive">
+                    <span>{t("Discount", "បញ្ចុះតម្លៃ")}</span>
+                    <span>-${discount.toFixed(2)}</span>
+                  </div>
+                )}
+                {deliveryFee > 0 && (
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{t("Delivery", "ដឹក")}</span>
+                    <span>${deliveryFee.toFixed(2)}</span>
+                  </div>
+                )}
+                {deliveryFee === 0 && (
+                  <div className="flex justify-between text-xs text-green-600">
+                    <span>{t("Delivery", "ដឹក")}</span>
+                    <span>{t("Free", "ឥតគិតថ្លៃ")}</span>
+                  </div>
+                )}
+                <div className="border-t pt-1 flex justify-between text-sm font-bold">
+                  <span>{t("Total", "សរុប")}</span>
+                  <span>${amount.toFixed(2)}</span>
+                </div>
+                <p className="text-[11px] text-muted-foreground text-center mt-1">
                   {t("Reference", "ឯកសារ")}: ST-{Date.now().toString().slice(-8)}
                 </p>
               </div>
@@ -269,7 +296,6 @@ function PaymentModal({
   );
 }
 
-// ─── Stepper ──────────────────────────────────────────────────────────────────
 function Stepper({ step }: { step: number }) {
   const { t } = useLanguage();
   const steps = [
@@ -296,14 +322,13 @@ function Stepper({ step }: { step: number }) {
   );
 }
 
-// ─── Main checkout component ──────────────────────────────────────────────────
 export default function CheckoutPage() {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const qc = useQueryClient();
 
-  const [step, setStep] = useState(0); // 0 = delivery, 1 = payment, 2 = confirm/QR
+  const [step, setStep] = useState(0);
   const [name, setName] = useState(user?.name ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [address, setAddress] = useState("");
@@ -314,6 +339,7 @@ export default function CheckoutPage() {
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; type: "percent" | "flat" | "free_shipping"; value: number } | null>(null);
 
   const { data: cart } = useGetCart({ query: { queryKey: ["/api/cart"] } });
+
   const validateCoupon = useValidateCoupon({
     mutation: {
       onSuccess: (result) => {
@@ -350,13 +376,7 @@ export default function CheckoutPage() {
     },
   });
 
-  const applyPromo = () => {
-    const code = promoInput.trim().toUpperCase();
-    if (!code) return;
-    validateCoupon.mutate({ data: { code, orderAmount: subtotal - cartDiscount } });
-  };
-
-  // Price calculations (must be before applyPromo uses subtotal)
+  // Price calculations
   const subtotal = cart ? Number(cart.subtotal) : 0;
   const cartDiscount = cart ? Number(cart.discount) : 0;
 
@@ -364,6 +384,7 @@ export default function CheckoutPage() {
     navigate("/cart");
     return null;
   }
+
   const afterCartDiscount = subtotal - cartDiscount;
   let promoDiscount = 0;
   if (appliedPromo) {
@@ -373,8 +394,15 @@ export default function CheckoutPage() {
   const afterPromo = afterCartDiscount - promoDiscount;
   const deliveryFee = (appliedPromo?.type === "free_shipping" || afterPromo >= DELIVERY_FREE_THRESHOLD) ? 0 : DELIVERY_FEE;
   const grandTotal = afterPromo + deliveryFee;
+  const totalDiscount = cartDiscount + promoDiscount;
 
   const selectedPayment = PAYMENT_METHODS.find(m => m.value === paymentMethod)!;
+
+  const applyPromo = () => {
+    const code = promoInput.trim().toUpperCase();
+    if (!code) return;
+    validateCoupon.mutate({ data: { code, orderAmount: subtotal - cartDiscount } });
+  };
 
   const handleDeliveryNext = (e: React.FormEvent) => {
     e.preventDefault();
@@ -409,6 +437,9 @@ export default function CheckoutPage() {
           <PaymentModal
             method={selectedPayment}
             amount={grandTotal}
+            subtotal={subtotal}
+            discount={totalDiscount}
+            deliveryFee={deliveryFee}
             onConfirm={handlePlaceOrder}
             onCancel={() => { setShowPaymentModal(false); setStep(1); }}
             isPending={createOrder.isPending}
@@ -420,10 +451,9 @@ export default function CheckoutPage() {
           <Stepper step={step} />
 
           <div className="grid md:grid-cols-5 gap-6">
-            {/* Left: form */}
             <div className="md:col-span-3 space-y-4">
 
-              {/* ── STEP 0: DELIVERY ── */}
+              {/* STEP 0: DELIVERY */}
               {step === 0 && (
                 <form onSubmit={handleDeliveryNext}>
                   <div className="bg-white dark:bg-card border rounded-xl p-5 space-y-4">
@@ -434,43 +464,22 @@ export default function CheckoutPage() {
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <Label className="text-xs">{t("Full Name", "ឈ្មោះពេញ")} *</Label>
-                        <Input
-                          value={name}
-                          onChange={e => setName(e.target.value)}
-                          placeholder={t("Your name", "ឈ្មោះ")}
-                          required className="h-9 text-sm"
-                        />
+                        <Input value={name} onChange={e => setName(e.target.value)} placeholder={t("Your name", "ឈ្មោះ")} required className="h-9 text-sm" />
                       </div>
                       <div className="space-y-1">
                         <Label className="text-xs">{t("Phone", "ទូរស័ព្ទ")} *</Label>
-                        <Input
-                          value={phone}
-                          onChange={e => setPhone(e.target.value)}
-                          placeholder="0xx xxx xxx"
-                          required className="h-9 text-sm"
-                        />
+                        <Input value={phone} onChange={e => setPhone(e.target.value)} placeholder="0xx xxx xxx" required className="h-9 text-sm" />
                       </div>
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs">{t("Street Address", "ផ្លូវ / ភូមិ / សង្កាត់")} *</Label>
-                      <Input
-                        value={address}
-                        onChange={e => setAddress(e.target.value)}
-                        placeholder={t("e.g. #12, St. 310, Boeung Keng Kang", "ឧ. #12, ផ្លូវ 310, បឹងកេងកង")}
-                        required className="h-9 text-sm"
-                      />
+                      <Input value={address} onChange={e => setAddress(e.target.value)} placeholder={t("e.g. #12, St. 310, Boeung Keng Kang", "ឧ. #12, ផ្លូវ 310, បឹងកេងកង")} required className="h-9 text-sm" />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs">{t("City / Province", "ខេត្ត / ក្រុង")}</Label>
-                      <Input
-                        value={city}
-                        onChange={e => setCity(e.target.value)}
-                        placeholder={t("e.g. Phnom Penh", "ឧ. ភ្នំពេញ")}
-                        className="h-9 text-sm"
-                      />
+                      <Input value={city} onChange={e => setCity(e.target.value)} placeholder={t("e.g. Phnom Penh", "ឧ. ភ្នំពេញ")} className="h-9 text-sm" />
                     </div>
 
-                    {/* Promo code */}
                     <div className="border-t pt-4">
                       <Label className="text-xs flex items-center gap-1 mb-2">
                         <Tag className="h-3.5 w-3.5 text-primary" />
@@ -513,7 +522,7 @@ export default function CheckoutPage() {
                 </form>
               )}
 
-              {/* ── STEP 1: PAYMENT METHOD ── */}
+              {/* STEP 1: PAYMENT METHOD */}
               {step === 1 && (
                 <div>
                   <div className="bg-white dark:bg-card border rounded-xl p-5">
@@ -521,10 +530,7 @@ export default function CheckoutPage() {
                       <CreditCard className="h-4 w-4 text-primary" />
                       {t("Select Payment Method", "ជ្រើសរើសវិធីសាស្ត្រទូទាត់")}
                     </h2>
-                    <RadioGroup
-                      value={paymentMethod}
-                      onValueChange={v => setPaymentMethod(v as OrderInputPaymentMethod)}
-                    >
+                    <RadioGroup value={paymentMethod} onValueChange={v => setPaymentMethod(v as OrderInputPaymentMethod)}>
                       <div className="space-y-2">
                         {PAYMENT_METHODS.map(m => (
                           <div
@@ -568,7 +574,6 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* ── STEP 2 is handled by the modal overlay ── */}
               {step === 2 && !showPaymentModal && (
                 <div className="bg-white dark:bg-card border rounded-xl p-8 text-center">
                   <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-3" />
@@ -582,7 +587,6 @@ export default function CheckoutPage() {
               <div className="bg-white dark:bg-card border rounded-xl p-5 sticky top-24">
                 <h2 className="font-bold mb-4 text-sm">{t("Your Order", "ការបញ្ជារបស់អ្នក")}</h2>
 
-                {/* Items */}
                 <div className="space-y-3 mb-4 max-h-52 overflow-y-auto pr-1">
                   {cart.items.map(item => (
                     <div key={item.id} className="flex gap-2.5 items-center">
@@ -600,7 +604,6 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
-                {/* Totals */}
                 <div className="border-t pt-3 space-y-2 text-sm">
                   <div className="flex justify-between text-muted-foreground">
                     <span>{t("Subtotal", "តម្លៃរង")}</span>
@@ -631,7 +634,6 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* Payment summary (step 1+) */}
                 {step >= 1 && (
                   <div className={`mt-3 ${selectedPayment.bg} rounded-xl p-3 flex items-center gap-3`}>
                     {"logo" in selectedPayment && selectedPayment.logo
@@ -647,7 +649,6 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {/* Delivery summary (step 1+) */}
                 {step >= 1 && address && (
                   <div className="mt-3 bg-muted/50 rounded-xl p-3">
                     <p className="text-xs font-medium text-muted-foreground mb-0.5">{t("Delivering to", "ដឹកទៅ")}</p>
