@@ -1,11 +1,10 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS",
-    "buildCommand": "npm install -g pnpm && pnpm install && pnpm --filter @workspace/db build && pnpm --filter @workspace/api-server build"
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "startCommand": "node backend/dist/index.mjs",
     "restartPolicyType": "ON_FAILURE"
   }
 }
