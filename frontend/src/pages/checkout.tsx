@@ -436,7 +436,7 @@ export default function CheckoutPage() {
         {showPaymentModal && (
           <PaymentModal
             method={selectedPayment}
-            amount={grandTotal}
+            amount={afterPromo}
             subtotal={subtotal}
             discount={totalDiscount}
             deliveryFee={deliveryFee}
