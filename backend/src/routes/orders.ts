@@ -110,7 +110,11 @@ router.post("/", requireAuth, async (req, res): Promise<void> => {
     }
   }
 
-  const total = subtotal - discount;
+  const DELIVERY_FREE_THRESHOLD = 30;
+  const DELIVERY_FEE = 3.00;
+  const afterDiscount = subtotal - discount;
+  const deliveryFee = afterDiscount >= DELIVERY_FREE_THRESHOLD ? 0 : DELIVERY_FEE;
+  const total = afterDiscount + deliveryFee;
 
   const simulatedPaymentStatus: "pending" | "paid" = parsed.data.paymentMethod === "cash" ? "pending" : "paid";
 
@@ -163,6 +167,7 @@ router.post("/", requireAuth, async (req, res): Promise<void> => {
     paymentStatus: order.paymentStatus,
     subtotal: orderResponse.subtotal,
     discount: orderResponse.discount,
+    deliveryFee: deliveryFee,
     total: orderResponse.total,
     shippingAddress: order.shippingAddress,
     itemCount: orderResponse.itemCount,

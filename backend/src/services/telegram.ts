@@ -9,6 +9,7 @@ export interface TelegramOrderNotification {
   paymentStatus: string;
   subtotal: number;
   discount: number;
+  deliveryFee?: number;
   total: number;
   shippingAddress?: string | null;
   itemCount?: number | null;
@@ -154,6 +155,9 @@ export async function notifyTelegramOrderPayment(order: TelegramOrderNotificatio
     `<b>Items:</b> ${order.itemCount ?? 0}`,
     `<b>Subtotal:</b> ${formatMoney(order.subtotal)}`,
     `<b>Discount:</b> ${formatMoney(order.discount)}`,
+    order.deliveryFee && order.deliveryFee > 0 
+      ? `<b>Delivery:</b> ${formatMoney(order.deliveryFee)}` 
+      : `<b>Delivery:</b> Free`,
     `<b>Total:</b> ${formatMoney(order.total)}`,
     order.shippingAddress ? `<b>Address:</b> ${escapeHtml(order.shippingAddress)}` : null,
     `<b>Time:</b> ${escapeHtml(createdAt)}`,
