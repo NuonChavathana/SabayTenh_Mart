@@ -38,7 +38,8 @@ const queryClient = new QueryClient({
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 // Generated hooks already use /api/... paths — no base URL needed for web
-setBaseUrl(null);
+// ថ្មី
+setBaseUrl(import.meta.env.VITE_API_URL || "http://localhost:8080");
 
 function Router() {
   return (
