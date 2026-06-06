@@ -14,7 +14,6 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN pnpm --filter @workspace/db build
 RUN pnpm --filter @workspace/api-server build
 
 EXPOSE 8080
