@@ -109,11 +109,15 @@ router.post("/", requireAuth, async (req, res): Promise<void> => {
       await db.update(couponsTable).set({ usedCount: coupon.usedCount + 1 }).where(eq(couponsTable.id, coupon.id));
     }
   }
-
   const DELIVERY_FREE_THRESHOLD = 30;
   const DELIVERY_FEE = 3.00;
   const afterDiscount = subtotal - discount;
-  const deliveryFee = afterDiscount >= DELIVERY_FREE_THRESHOLD ? 0 : DELIVERY_FEE;
+
+  // POS = មិនមាន Delivery, Online = មាន Delivery
+  const isPosOrderCheck = parsed.data.shippingAddress?.startsWith("POS") ?? false;
+  const deliveryFee = isPosOrderCheck 
+    ? 0 
+    : (afterDiscount >= DELIVERY_FREE_THRESHOLD ? 0 : DELIVERY_FEE);
   const total = afterDiscount + deliveryFee;
 
   const simulatedPaymentStatus: "pending" | "paid" = parsed.data.paymentMethod === "cash" ? "pending" : "paid";
