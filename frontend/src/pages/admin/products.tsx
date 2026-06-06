@@ -24,6 +24,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { getDiscountPercent } from "@/lib/discount";
+import { getProductImageUrl } from "@/lib/images";
 
 const EMPTY_FORM = {
   name: "",
@@ -37,15 +38,6 @@ const EMPTY_FORM = {
   stock: "",
   isFeatured: false,
   tags: "",
-};
-
-const API_BASE_URL = "http://localhost:8080";
-
-const getProductImageUrl = (image?: string | null) => {
-  if (!image) return "";
-  if (image.startsWith("http")) return image;
-  if (image.startsWith("/uploads")) return `${API_BASE_URL}${image}`;
-  return image;
 };
 
 export default function AdminProductsPage() {
@@ -231,7 +223,6 @@ export default function AdminProductsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <h1 className="text-xl font-bold">{t("Products", "ផលិតផល")}</h1>
-
             <Button size="sm" className="gap-2" onClick={openCreate}>
               <Plus className="h-4 w-4" />
               {t("Add Product", "បន្ថែមផលិតផល")}
@@ -282,7 +273,6 @@ export default function AdminProductsPage() {
                           </th>
                         </tr>
                       </thead>
-
                       <tbody className="divide-y">
                         {data?.products.map((p) => {
                           const discountPercent =
@@ -292,10 +282,7 @@ export default function AdminProductsPage() {
                             ) ?? 0;
 
                           return (
-                            <tr
-                              key={p.id}
-                              className="hover:bg-muted/20 transition-colors"
-                            >
+                            <tr key={p.id} className="hover:bg-muted/20 transition-colors">
                               <td className="px-4 py-3">
                                 <div className="flex items-center gap-2">
                                   {p.image ? (
@@ -322,11 +309,8 @@ export default function AdminProductsPage() {
                                       </svg>
                                     </div>
                                   )}
-
                                   <div>
-                                    <p className="font-medium line-clamp-1">
-                                      {p.name}
-                                    </p>
+                                    <p className="font-medium line-clamp-1">{p.name}</p>
                                     {p.nameKh && (
                                       <p className="text-xs text-muted-foreground line-clamp-1">
                                         {p.nameKh}
@@ -341,13 +325,11 @@ export default function AdminProductsPage() {
                                   <span className="font-semibold text-primary">
                                     ${Number(p.price).toFixed(2)}
                                   </span>
-
                                   {discountPercent > 0 && p.originalPrice && (
                                     <>
                                       <span className="text-xs text-muted-foreground line-through">
                                         ${Number(p.originalPrice).toFixed(2)}
                                       </span>
-
                                       <Badge className="bg-red-500 text-white border-0 text-[10px] font-bold">
                                         -{discountPercent}%
                                       </Badge>
@@ -357,15 +339,7 @@ export default function AdminProductsPage() {
                               </td>
 
                               <td className="px-4 py-3">
-                                <span
-                                  className={`font-medium ${
-                                    p.stock === 0
-                                      ? "text-destructive"
-                                      : p.stock <= 10
-                                      ? "text-yellow-600"
-                                      : ""
-                                  }`}
-                                >
+                                <span className={`font-medium ${p.stock === 0 ? "text-destructive" : p.stock <= 10 ? "text-yellow-600" : ""}`}>
                                   {p.stock}
                                 </span>
                               </td>
@@ -376,29 +350,16 @@ export default function AdminProductsPage() {
 
                               <td className="px-4 py-3">
                                 {p.isFeatured && (
-                                  <Badge className="text-xs bg-primary/10 text-primary border-0">
-                                    ★
-                                  </Badge>
+                                  <Badge className="text-xs bg-primary/10 text-primary border-0">★</Badge>
                                 )}
                               </td>
 
                               <td className="px-4 py-3">
                                 <div className="flex gap-1">
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="h-7 w-7 p-0"
-                                    onClick={() => openEdit(p)}
-                                  >
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={() => openEdit(p)}>
                                     <Edit className="h-3.5 w-3.5" />
                                   </Button>
-
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                                    onClick={() => setDeleteId(p.id)}
-                                  >
+                                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-destructive hover:text-destructive" onClick={() => setDeleteId(p.id)}>
                                     <Trash2 className="h-3.5 w-3.5" />
                                   </Button>
                                 </div>
@@ -412,25 +373,13 @@ export default function AdminProductsPage() {
 
                   {totalPages > 1 && (
                     <div className="flex justify-center gap-2 p-4">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage((p) => Math.max(1, p - 1))}
-                        disabled={page === 1}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
                         {t("Prev", "មុន")}
                       </Button>
-
                       <span className="flex items-center text-xs text-muted-foreground px-2">
                         {page}/{totalPages}
                       </span>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                        disabled={page === totalPages}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
                         {t("Next", "បន្ទាប់")}
                       </Button>
                     </div>
@@ -441,16 +390,11 @@ export default function AdminProductsPage() {
           </Card>
         </div>
 
-        <Dialog
-          open={dialog === "create" || dialog === "edit"}
-          onOpenChange={() => setDialog(null)}
-        >
+        <Dialog open={dialog === "create" || dialog === "edit"} onOpenChange={() => setDialog(null)}>
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                {dialog === "create"
-                  ? t("Add Product", "បន្ថែមផលិតផល")
-                  : t("Edit Product", "កែផលិតផល")}
+                {dialog === "create" ? t("Add Product", "បន្ថែមផលិតផល") : t("Edit Product", "កែផលិតផល")}
               </DialogTitle>
             </DialogHeader>
 
@@ -460,7 +404,6 @@ export default function AdminProductsPage() {
                   <Label className="text-xs">{t("Name (EN)", "ឈ្មោះ (EN)")} *</Label>
                   <Input value={form.name} onChange={f("name")} required className="mt-1 h-8 text-sm" />
                 </div>
-
                 <div>
                   <Label className="text-xs">{t("Name (KH)", "ឈ្មោះ (KH)")}</Label>
                   <Input value={form.nameKh} onChange={f("nameKh")} className="mt-1 h-8 text-sm" />
@@ -477,12 +420,10 @@ export default function AdminProductsPage() {
                   <Label className="text-xs">{t("Price", "តម្លៃ")} *</Label>
                   <Input value={form.price} onChange={f("price")} type="number" step="0.01" required className="mt-1 h-8 text-sm" />
                 </div>
-
                 <div>
                   <Label className="text-xs">{t("Original Price", "តម្លៃដើម")}</Label>
                   <Input value={form.originalPrice} onChange={f("originalPrice")} type="number" step="0.01" className="mt-1 h-8 text-sm" />
                 </div>
-
                 <div>
                   <Label className="text-xs">{t("Stock", "ស្តុក")} *</Label>
                   <Input value={form.stock} onChange={f("stock")} type="number" required className="mt-1 h-8 text-sm" />
@@ -492,39 +433,26 @@ export default function AdminProductsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label className="text-xs">{t("Category", "ប្រភេទ")} *</Label>
-                  <Select
-                    value={form.categoryId}
-                    onValueChange={(v) => setForm((p) => ({ ...p, categoryId: v }))}
-                  >
+                  <Select value={form.categoryId} onValueChange={(v) => setForm((p) => ({ ...p, categoryId: v }))}>
                     <SelectTrigger className="mt-1 h-8 text-sm">
                       <SelectValue placeholder={t("Select", "ជ្រើស")} />
                     </SelectTrigger>
-
                     <SelectContent>
                       {categories?.map((c) => (
-                        <SelectItem key={c.id} value={String(c.id)}>
-                          {c.name}
-                        </SelectItem>
+                        <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div>
                   <Label className="text-xs">{t("Brand", "ម៉ាក")}</Label>
-                  <Select
-                    value={form.brandId}
-                    onValueChange={(v) => setForm((p) => ({ ...p, brandId: v }))}
-                  >
+                  <Select value={form.brandId} onValueChange={(v) => setForm((p) => ({ ...p, brandId: v }))}>
                     <SelectTrigger className="mt-1 h-8 text-sm">
                       <SelectValue placeholder={t("Optional", "ស្រេចចិត្ត")} />
                     </SelectTrigger>
-
                     <SelectContent>
                       {brands?.map((b) => (
-                        <SelectItem key={b.id} value={String(b.id)}>
-                          {b.name}
-                        </SelectItem>
+                        <SelectItem key={b.id} value={String(b.id)}>{b.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -533,7 +461,6 @@ export default function AdminProductsPage() {
 
               <div>
                 <Label className="text-xs">{t("Product Image", "រូបភាពផលិតផល")}</Label>
-
                 <Input
                   type="file"
                   accept="image/jpeg,image/jpg,image/png,image/webp"
@@ -541,12 +468,8 @@ export default function AdminProductsPage() {
                   disabled={imageUploading}
                   className="mt-1 h-8 text-sm"
                 />
-
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t(
-                    "Upload JPG, PNG, or WEBP image. Maximum size 10MB.",
-                    "បញ្ចូលរូបភាព JPG, PNG ឬ WEBP។ ទំហំអតិបរមា 10MB។"
-                  )}
+                  {t("Upload JPG, PNG, or WEBP image. Maximum size 10MB.", "បញ្ចូលរូបភាព JPG, PNG ឬ WEBP។ ទំហំអតិបរមា 10MB។")}
                 </p>
 
                 {imageUploading && (
@@ -563,22 +486,11 @@ export default function AdminProductsPage() {
                       alt="Product preview"
                       className="w-16 h-16 rounded object-cover"
                     />
-
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium">
-                        {t("Image preview", "មើលរូបភាពជាមុន")}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {form.image}
-                      </p>
+                      <p className="text-xs font-medium">{t("Image preview", "មើលរូបភាពជាមុន")}</p>
+                      <p className="text-xs text-muted-foreground truncate">{form.image}</p>
                     </div>
-
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setForm((p) => ({ ...p, image: "" }))}
-                    >
+                    <Button type="button" variant="outline" size="sm" onClick={() => setForm((p) => ({ ...p, image: "" }))}>
                       {t("Remove", "លុប")}
                     </Button>
                   </div>
@@ -602,11 +514,7 @@ export default function AdminProductsPage() {
                 <Button type="button" variant="outline" onClick={() => setDialog(null)}>
                   {t("Cancel", "បោះបង់")}
                 </Button>
-
-                <Button
-                  type="submit"
-                  disabled={createProduct.isPending || updateProduct.isPending || imageUploading}
-                >
+                <Button type="submit" disabled={createProduct.isPending || updateProduct.isPending || imageUploading}>
                   {dialog === "create" ? t("Create", "បង្កើត") : t("Save", "រក្សាទុក")}
                 </Button>
               </DialogFooter>
@@ -619,21 +527,14 @@ export default function AdminProductsPage() {
             <DialogHeader>
               <DialogTitle>{t("Delete Product?", "លុបផលិតផល?")}</DialogTitle>
             </DialogHeader>
-
             <p className="text-sm text-muted-foreground">
               {t("This action cannot be undone.", "សកម្មភាពនេះមិនអាចត្រឡប់វិញ។")}
             </p>
-
             <DialogFooter>
               <Button variant="outline" onClick={() => setDeleteId(null)}>
                 {t("Cancel", "បោះបង់")}
               </Button>
-
-              <Button
-                variant="destructive"
-                onClick={() => deleteId && deleteProduct.mutate({ id: deleteId })}
-                disabled={deleteProduct.isPending}
-              >
+              <Button variant="destructive" onClick={() => deleteId && deleteProduct.mutate({ id: deleteId })} disabled={deleteProduct.isPending}>
                 {t("Delete", "លុប")}
               </Button>
             </DialogFooter>
