@@ -1,44 +1,19 @@
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
 
-const uploadDir = path.join(process.cwd(), "uploads", "products");
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: function (_req, _file, cb) {
-    cb(null, uploadDir);
-  },
-
-  filename: function (_req, file, cb) {
-    const uniqueName =
-      "product-" +
-      Date.now() +
-      "-" +
-      Math.round(Math.random() * 1e9) +
-      path.extname(file.originalname);
-
-    cb(null, uniqueName);
-  },
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const fileFilter: multer.Options["fileFilter"] = (_req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
-
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only JPG, PNG, and WEBP images are allowed"));
-  }
-};
-
-export const uploadProductImage = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "sabaytenh/products",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+  } as any,
 });
+
+export const uploadProductImage = multer({ storage });
