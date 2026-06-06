@@ -1,73 +1,66 @@
-# SabayTenh Mart
+# SabayTenh Mart (សប្បាយទិញ)
 
-Full-stack eCommerce monorepo (React + Express + MySQL).
+Full-stack eCommerce platform built with React + Express + MySQL.
 
-## Project layout
+## 🌐 Live Demo
+- **Website:** https://sabay-tenh-mart.vercel.app
+- **Admin Panel:** https://sabay-tenh-mart.vercel.app/admin
+- **Demo Login:** admin@sabaytenh.com / password123
+
+## 👥 Team Members
+- Nuon Chavathana
+- Phet Narin
+- Oun Sivting
+## 🛠️ Tech Stack
+- **Frontend:** React 19, TypeScript, Vite, TailwindCSS
+- **Backend:** Express 5, Node.js
+- **Database:** MySQL 8, Drizzle ORM
+- **Image Storage:** Cloudinary
+- **Deployment:** Railway (Backend + DB), Vercel (Frontend)
+
+## 📁 Project Structure
 
 | Path | Purpose |
-|------|---------|
+|---|---|
 | `frontend/` | React 19 + Vite storefront |
 | `backend/` | Express 5 API server |
 | `database/` | Drizzle ORM schema and DB tooling |
 | `packages/` | Shared Zod types and React Query API client |
 
-## Prerequisites
+## ✨ Features
+- 🛒 Shopping Cart & Checkout
+- 👤 User Authentication (Admin, Staff, Customer)
+- 📦 Product Management (Admin Panel)
+- 🏷️ Categories & Brands
+- 💰 Coupons & Discounts
+- 📊 POS Cashier System
+- 📱 Telegram Notifications
+- 🌙 Dark Mode
+- 🇰🇭 Khmer & English Language
 
-- Node.js 24+
-- [pnpm](https://pnpm.io/) (workspace uses pnpm only)
-- [Docker](https://www.docker.com/) for MySQL (or your own MySQL 8+ server)
-- [MySQL Workbench](https://www.mysql.com/products/workbench/) (optional, to browse/edit data)
-
-## Setup
+## 🚀 Setup (Local)
 
 1. Copy environment variables:
-
-   ```bash
-   cp .env.example .env
-   ```
+```bash
+cp .env.example .env
+```
 
 2. Start MySQL:
-
-   ```bash
-   pnpm run db:up
-   ```
-
-3. Install dependencies and create tables + demo data:
-
-   ```bash
-   pnpm install
-   pnpm run db:setup
-   ```
-
-   Demo logins: `admin@sabaytenh.com` / `password123` (also staff & customer in seed)
-
-See [database/README.md](./database/README.md) for **MySQL Workbench** connection details.
-
-## Run
-
-**API server** (port 8080):
-
 ```bash
-pnpm --filter @workspace/api-server run dev
+pnpm run db:up
 ```
 
-**Frontend** (port 8081, proxies `/api` to the API):
-
+3. Install and setup:
 ```bash
-pnpm --filter @workspace/sabaytenh run dev
+pnpm install
+pnpm run db:setup
 ```
 
-**Both** (from repo root):
-
+4. Run development:
 ```bash
 pnpm run dev:backend
 pnpm run dev:frontend
 ```
 
-## Other commands
-
-```bash
-pnpm run typecheck          # Typecheck all packages
-pnpm run build              # Build all packages
-pnpm run db:down            # Stop MySQL container
-```
+## 📚 About
+This is a Database project for Semester 2 Year 3.
