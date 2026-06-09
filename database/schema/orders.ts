@@ -6,12 +6,14 @@ import { z } from "zod/v4";
 export const ordersTable = mysqlTable("orders", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("user_id").notNull(),
+  couponId: int("coupon_id"),                              // ← បន្ថែម!
   status: varchar("status", { length: 255, enum: ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"],
   })
     .notNull()
     .default("pending"),
   subtotal: varchar("subtotal", { length: 255 }).notNull(),
   discount: varchar("discount", { length: 255 }).notNull().default("0"),
+  deliveryFee: varchar("delivery_fee", { length: 255 }).notNull().default("0"),  // ← បន្ថែម!
   total: varchar("total", { length: 255 }).notNull(),
   paymentMethod: varchar("payment_method", { length: 255, enum: ["cash", "khqr", "aba", "acleda", "canadia", "wing"],
   }),

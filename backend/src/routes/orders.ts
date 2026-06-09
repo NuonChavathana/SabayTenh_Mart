@@ -13,6 +13,7 @@ import {
   sql,
   and,
   type Order,
+  inventoryLogsTable,
 } from "@workspace/db";
 import { requireAuth, requireRole } from "../middleware/auth";
 import { notifyTelegramOrderPayment } from "../services/telegram";
@@ -71,9 +72,27 @@ router.get("/", requireAuth, async (req, res): Promise<void> => {
     conditions.push(eq(ordersTable.status, req.query.status as Order["status"]));
   }
   const where = conditions.length > 0 ? and(...conditions) : undefined;
-  const rows = await db.select().from(ordersTable).where(where).orderBy(desc(ordersTable.createdAt)).limit(50);
-  const result = await Promise.all(rows.map(o => buildOrderRow(o)));
-  res.json(result);
+
+  const rows = await db
+    .select({
+      id: ordersTable.id,
+      userId: ordersTable.userId,
+      customerName: usersTable.name,  // ← JOIN ក្នុង query
+      status: ordersTable.status,
+      subtotal: ordersTable.subtotal,
+      discount: ordersTable.discount,
+      total: ordersTable.total,
+      paymentMethod: ordersTable.paymentMethod,
+      paymentStatus: ordersTable.paymentStatus,
+      createdAt: ordersTable.createdAt,
+    })
+    .from(ordersTable)
+    .leftJoin(usersTable, eq(ordersTable.userId, usersTable.id)) // ← JOIN
+    .where(where)
+    .orderBy(desc(ordersTable.createdAt))
+    .limit(50);
+
+  res.json(rows); // ✅ 1 query ប៉ុណ្ណោះ!
 });
 
 router.post("/", requireAuth, async (req, res): Promise<void> => {
@@ -93,6 +112,7 @@ router.post("/", requireAuth, async (req, res): Promise<void> => {
   const subtotal = cartItems.reduce((sum, i) => sum + parseFloat(String(i.price)) * i.quantity, 0);
 
   let discount = 0;
+  let couponId: number | null = null;
 
   const posDiscountMatch = parsed.data.note?.match(/^POS_DISCOUNT:(\d+)/);
   if (posDiscountMatch) {
@@ -104,6 +124,7 @@ router.post("/", requireAuth, async (req, res): Promise<void> => {
     const [coupon] = await db.select().from(couponsTable).where(eq(couponsTable.code, parsed.data.couponCode.toUpperCase()));
     if (coupon && coupon.isActive && (coupon.maxUses === null || coupon.usedCount < coupon.maxUses)) {
       const value = parseFloat(String(coupon.value));
+      couponId = coupon.id;
       if (coupon.type === "percent") discount = subtotal * (value / 100);
       else if (coupon.type === "flat") discount = Math.min(value, subtotal);
       await db.update(couponsTable).set({ usedCount: coupon.usedCount + 1 }).where(eq(couponsTable.id, coupon.id));
@@ -129,11 +150,13 @@ router.post("/", requireAuth, async (req, res): Promise<void> => {
       status: "pending",
       subtotal: String(subtotal),
       discount: String(discount),
+      deliveryFee: String(deliveryFee),
       total: String(total),
       paymentMethod: parsed.data.paymentMethod,
       paymentStatus: simulatedPaymentStatus,
       shippingAddress: parsed.data.shippingAddress,
       note: parsed.data.note ?? null,
+      couponId: couponId,
     })
     .$returningId();
   const [order] = await db.select().from(ordersTable).where(eq(ordersTable.id, inserted.id));
@@ -146,13 +169,18 @@ router.post("/", requireAuth, async (req, res): Promise<void> => {
   })));
 
   for (const item of cartItems) {
-  await db
-    .update(productsTable)
+  await db.update(productsTable)
     .set({
       soldCount: sql`sold_count + ${item.quantity}`,
       stock: sql`stock - ${item.quantity}`,
     })
     .where(eq(productsTable.id, item.productId));
+  await db.insert(inventoryLogsTable).values({
+    productId: item.productId,
+    userId: null,
+    change: -item.quantity,
+    reason: `sale - order #${order.id}`,
+  });
   }
 
   await db.delete(cartItemsTable).where(eq(cartItemsTable.cartId, cart.id));
